@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Github, Linkedin, Mail, Phone } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, Download } from "lucide-react";
+import Image from "next/image";
 
 export default function Portfolio() {
   return (
@@ -11,29 +12,43 @@ export default function Portfolio() {
           {/* Left Sidebar */}
           <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
             <div>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-4xl font-bold tracking-tight text-zinc-100 sm:text-5xl"
-              >
-                Swagato Das
-              </motion.h1>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="mt-3 text-lg font-medium tracking-tight text-zinc-200 sm:text-xl"
-              >
-                Master of Statistics @ Indian Statistical Institute
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mt-4 max-w-xs leading-normal"
-              >
-                Researcher focusing on Deep Learning, Generative Models, Causal Inference, and Non-Parametric Clustering.
-              </motion.p>
+              <div className="flex items-start justify-between">
+                <div>
+                  <motion.h1
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-4xl font-bold tracking-tight text-zinc-100 sm:text-5xl"
+                  >
+                    Swagato Das
+                  </motion.h1>
+                  <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="mt-3 text-lg font-medium tracking-tight text-zinc-200 sm:text-xl"
+                  >
+                    Master of Statistics Student @ ISI Kolkata
+                  </motion.h2>
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="mt-4 max-w-xs leading-normal"
+                  >
+                    A humble master's student at the Indian Statistical Institute. <br/><br/>
+                    <span className="text-zinc-200 font-medium">Research interests:</span> Deep Learning, Generative Models, Causal Inference, and Non-Parametric Clustering.
+                  </motion.p>
+                </div>
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="hidden lg:block w-32 h-32 rounded-full overflow-hidden border-2 border-zinc-800 shrink-0 ml-4"
+                >
+                  <Image src="/profile.jpg" alt="Swagato Das" width={128} height={128} className="object-cover w-full h-full" />
+                </motion.div>
+              </div>
+
               {/* Navigation / Contact */}
               <motion.ul
                 initial={{ opacity: 0 }}
@@ -66,24 +81,87 @@ export default function Portfolio() {
                   </a>
                 </li>
               </motion.ul>
+              
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="mt-8"
+              >
+                <a href="/Swagato_Das_CV.pdf" download className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-100 bg-zinc-800/50 border border-zinc-700/50 rounded-full hover:bg-zinc-700/50 transition-colors">
+                  <Download className="h-4 w-4" />
+                  Download CV
+                </a>
+              </motion.div>
             </div>
           </header>
 
           {/* Right Content */}
           <main className="pt-24 lg:w-1/2 lg:py-24 flex flex-col gap-24">
-            {/* About */}
+            
+            {/* Mobile Image */}
+            <div className="lg:hidden flex justify-center mb-8">
+               <div className="w-40 h-40 rounded-full overflow-hidden border-2 border-zinc-800">
+                  <Image src="/profile.jpg" alt="Swagato Das" width={160} height={160} className="object-cover w-full h-full" />
+               </div>
+            </div>
+
+            {/* Education */}
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="space-y-4"
             >
-              <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-100 lg:hidden">About</h3>
-              <p className="leading-relaxed">
-                I am a statistician and researcher with a strong foundation in <span className="text-zinc-100 font-medium">Biostatistics, Causal Inference, and Statistical Learning</span>. My current work explores the intersection of <span className="text-zinc-100 font-medium">Deep Learning, Flow Matching, and Generative Models</span>, particularly applied to bioinformatics and dynamic system learning.
-              </p>
-              <p className="leading-relaxed">
-                I am currently pursuing my Master of Statistics at the Indian Statistical Institute, Kolkata, where I also completed my Bachelor's degree with honors.
+              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Education</h3>
+              <div className="space-y-8">
+                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4">
+                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
+                    Jul 2025 &mdash; Present
+                  </header>
+                  <div className="z-10 sm:col-span-6">
+                    <h4 className="font-medium leading-snug text-zinc-200">
+                      Master of Statistics [M.Stat.]
+                    </h4>
+                    <p className="mt-1 text-sm text-zinc-500">Indian Statistical Institute, Kolkata</p>
+                    <p className="mt-2 text-sm text-zinc-400">Aggregate Score - Ongoing</p>
+                  </div>
+                </div>
+                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4">
+                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
+                    Aug 2022 &mdash; May 2025
+                  </header>
+                  <div className="z-10 sm:col-span-6">
+                    <h4 className="font-medium leading-snug text-zinc-200">
+                      Bachelor of Statistics [B.Stat.] (Honors)
+                    </h4>
+                    <p className="mt-1 text-sm text-zinc-500">Indian Statistical Institute, Kolkata</p>
+                    <p className="mt-2 text-sm text-zinc-400">Aggregate Score - 75%</p>
+                  </div>
+                </div>
+                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4">
+                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
+                    2021
+                  </header>
+                  <div className="z-10 sm:col-span-6">
+                    <h4 className="font-medium leading-snug text-zinc-200">
+                      AISSCE (Class XII)
+                    </h4>
+                    <p className="mt-1 text-sm text-zinc-500">Hem Sheela Model School, Durgapur</p>
+                    <p className="mt-2 text-sm text-zinc-400">Aggregate Score - 94.2%</p>
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* Relevant Coursework */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Relevant Coursework</h3>
+              <p className="leading-relaxed text-sm">
+                Causal Inference (Ongoing), Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods (Ongoing), Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Regression Techniques, Categorical Data Analysis, Sample Surveys, Molecular Biology (Elective), Introduction to Stochastic Processes, Applied Stochastic Processes, Introduction to Programming and Data Structures, Real Analysis (I-III), Probability Theory (I-III), Measure Theoretic Probability (Ongoing), Vector and Matrices (I-II), Numerical Analysis, Elements of Algebraic Structures, Discrete Mathematics, Differential Equation, Design and Analysis of Algorithms, Statistical Quality Control and Operations Research, Statistics Comprehensive, Metric Topology and Complex Analysis (Elective) (Ongoing), Optimization Techniques (Elective) (Ongoing), Algebra (Audit) (Ongoing).
               </p>
             </motion.section>
 
@@ -95,7 +173,6 @@ export default function Portfolio() {
             >
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Experience</h3>
               <div className="space-y-12">
-                {/* Job 1 */}
                 <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
                   <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
                   <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
@@ -106,12 +183,14 @@ export default function Portfolio() {
                       Research Intern &middot; TU Darmstadt, Germany
                     </h4>
                     <p className="mt-1 text-sm text-zinc-500">Self Organizing Systems Lab</p>
-                    <p className="mt-2 text-sm leading-normal">
-                      Developed a deep learning system for in-silico SELEX simulation and prediction. Designed a cross-attention predictor to model round-wise DNA sequence enrichment and built a generative framework using flow matching and neural ODEs.
-                    </p>
+                    <ul className="mt-2 text-sm leading-normal list-disc list-inside space-y-1">
+                      <li>Worked on the development of a deep learning system for in-silico SELEX simulation and prediction.</li>
+                      <li>Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment.</li>
+                      <li>Building a generative framework using flow matching and neural ODEs to simulate the full enrichment trajectory.</li>
+                      <li>Responsible for constructing embedding pipelines and training conditional vector fields.</li>
+                    </ul>
                   </div>
                 </div>
-                {/* Job 2 */}
                 <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
                   <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
                   <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
@@ -122,8 +201,22 @@ export default function Portfolio() {
                       Organizing Member &middot; ISI, Kolkata
                     </h4>
                     <p className="mt-1 text-sm text-zinc-500">Winter School on Deep Learning [WSDL]</p>
+                    <ul className="mt-2 text-sm leading-normal list-disc list-inside space-y-1">
+                      <li>Contributed to an intensive academic event aimed at providing self-motivated students with in-depth knowledge and exposure to cutting-edge research in Deep Learning.</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                  <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
+                    Aug 2022 &mdash; May 2025
+                  </header>
+                  <div className="z-10 sm:col-span-6">
+                    <h4 className="font-medium leading-snug text-zinc-200">
+                      Member &middot; ISI Maths Club
+                    </h4>
                     <p className="mt-2 text-sm leading-normal">
-                      Contributed to an intensive academic event aimed at providing self-motivated students with in-depth knowledge and exposure to cutting-edge research in Deep Learning.
+                      A small organization focusing on promoting interest and understanding in mathematics beyond the formal classroom setting.
                     </p>
                   </div>
                 </div>
@@ -159,98 +252,16 @@ export default function Portfolio() {
               </div>
             </motion.section>
 
-            {/* Projects */}
+            {/* Interests */}
             <motion.section
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Selected Projects</h3>
-              <div className="space-y-12">
-                {/* Project 1 */}
-                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
-                  <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
-                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
-                    2025
-                  </header>
-                  <div className="z-10 sm:col-span-6">
-                    <h4 className="font-medium leading-snug text-zinc-200">
-                      Convex Clustering Methodologies
-                    </h4>
-                    <p className="mt-1 text-sm text-zinc-500">Guide: Prof. Swagatam Das</p>
-                    <p className="mt-2 text-sm leading-normal">
-                      Explored techniques in Convex clustering literature, adapting ADMM for biclustering to simultaneously cluster samples and genes by devising appropriate objective functions.
-                    </p>
-                  </div>
-                </div>
-                {/* Project 2 */}
-                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
-                  <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
-                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
-                    2024
-                  </header>
-                  <div className="z-10 sm:col-span-6">
-                    <h4 className="font-medium leading-snug text-zinc-200">
-                      Bregman Divergences & Clustering Consistency
-                    </h4>
-                    <p className="mt-1 text-sm text-zinc-500">Guide: Prof. Swagatam Das</p>
-                    <p className="mt-2 text-sm leading-normal">
-                      Analyzed convergence rates of clustering algorithms under various optimization subroutines (Gradient descent, ADAM) using different Bregman divergences like Kullback-Leibler.
-                    </p>
-                  </div>
-                </div>
-                {/* Project 3 */}
-                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
-                  <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
-                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
-                    2024
-                  </header>
-                  <div className="z-10 sm:col-span-6">
-                    <h4 className="font-medium leading-snug text-zinc-200">
-                      Reinforcement Learning & Evolutionary Algorithms
-                    </h4>
-                    <p className="mt-1 text-sm text-zinc-500">Guide: Prof. Swagatam Das & Dr. Abhishek Sinha</p>
-                    <p className="mt-2 text-sm leading-normal">
-                      Implemented algorithms like minimax, Q-learning, and MCTS on gym environments including tic-tac-toe, blackjack, and Atari games to study the intersection of RL and evolutionary techniques.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.section>
-
-            {/* Education */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Education</h3>
-              <div className="space-y-8">
-                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4">
-                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
-                    2025 &mdash; Present
-                  </header>
-                  <div className="z-10 sm:col-span-6">
-                    <h4 className="font-medium leading-snug text-zinc-200">
-                      Master of Statistics [M.Stat.]
-                    </h4>
-                    <p className="mt-1 text-sm text-zinc-500">Indian Statistical Institute, Kolkata</p>
-                    <p className="mt-2 text-sm text-zinc-400">Qualified for direct admission with a government-funded stipend.</p>
-                  </div>
-                </div>
-                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4">
-                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">
-                    2022 &mdash; 2025
-                  </header>
-                  <div className="z-10 sm:col-span-6">
-                    <h4 className="font-medium leading-snug text-zinc-200">
-                      Bachelor of Statistics [B.Stat.] (Honors)
-                    </h4>
-                    <p className="mt-1 text-sm text-zinc-500">Indian Statistical Institute, Kolkata</p>
-                    <p className="mt-2 text-sm text-zinc-400">Admitted with a government-funded stipend. Aggregate Score: 75%.</p>
-                  </div>
-                </div>
-              </div>
+              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Interests</h3>
+              <p className="leading-relaxed text-sm">
+                Biostatistics, Causal Inference and Discovery, Bayesian Techniques, Statistical Learning, Non-Parametric Clustering techniques, Flow Matching, Diffusion Processes, LLMs, Deep Learning, Convex and Non-Convex Optimization Techniques, Convex Clustering, Evolutionary Algorithms, Reinforcement Learning, Information Theory, Graph Learning.
+              </p>
             </motion.section>
 
             {/* Skills */}
@@ -259,13 +270,148 @@ export default function Portfolio() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Skills & Tools</h3>
-              <div className="flex flex-wrap gap-2">
-                {['R', 'Python', 'C', 'LaTeX', 'Java', 'Julia', 'PyTorch', 'Git/GitHub', 'WandB', 'Jupyter'].map((skill) => (
-                  <span key={skill} className="inline-flex items-center rounded-full bg-zinc-800/50 px-4 py-2 text-sm font-medium text-zinc-200 border border-zinc-700/50 hover:bg-zinc-700/50 transition-colors cursor-default">
-                    {skill}
-                  </span>
-                ))}
+              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Skills</h3>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-semibold text-zinc-200 mb-2">Languages</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {['R', 'Python', 'C', 'LaTeX', 'Java', 'Julia'].map((skill) => (
+                      <span key={skill} className="inline-flex items-center rounded-full bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-300 border border-zinc-700/50">{skill}</span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-zinc-200 mb-2">Tools</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {['RStudio', 'Git/GitHub', 'WandB', 'VS Code', 'Google AppScripts', 'Jupyter Notebook', 'Google Colab'].map((skill) => (
+                      <span key={skill} className="inline-flex items-center rounded-full bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-300 border border-zinc-700/50">{skill}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.section>
+
+            {/* Projects */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Projects</h3>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                
+                {/* Project Card 1 */}
+                <a href="#" className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all hover:bg-zinc-800/50 hover:border-zinc-700">
+                  <div>
+                    <div className="mb-4 flex items-center justify-between">
+                      <h4 className="font-semibold text-zinc-100">SELEX Simulator</h4>
+                      <Github className="h-5 w-5 text-zinc-500 group-hover:text-zinc-300" />
+                    </div>
+                    <p className="text-sm text-zinc-400 mb-4 line-clamp-3">
+                      Deep learning system for in-silico SELEX simulation. Designed a cross-attention predictor to model round-wise DNA sequence enrichment.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">Deep Learning</span>
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">Flow Matching</span>
+                  </div>
+                </a>
+
+                {/* Project Card 2 */}
+                <a href="#" className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all hover:bg-zinc-800/50 hover:border-zinc-700">
+                  <div>
+                    <div className="mb-4 flex items-center justify-between">
+                      <h4 className="font-semibold text-zinc-100">Convex Clustering</h4>
+                      <Github className="h-5 w-5 text-zinc-500 group-hover:text-zinc-300" />
+                    </div>
+                    <p className="text-sm text-zinc-400 mb-4 line-clamp-3">
+                      Explored techniques in Convex clustering literature, adapting ADMM for biclustering to simultaneously cluster samples and genes.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">Optimization</span>
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">ADMM</span>
+                  </div>
+                </a>
+
+                {/* Project Card 3 */}
+                <a href="#" className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all hover:bg-zinc-800/50 hover:border-zinc-700">
+                  <div>
+                    <div className="mb-4 flex items-center justify-between">
+                      <h4 className="font-semibold text-zinc-100">Bregman Divergences</h4>
+                      <Github className="h-5 w-5 text-zinc-500 group-hover:text-zinc-300" />
+                    </div>
+                    <p className="text-sm text-zinc-400 mb-4 line-clamp-3">
+                      Analyzed convergence rates of clustering algorithms under various optimization subroutines using different Bregman divergences.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">Clustering</span>
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">Math</span>
+                  </div>
+                </a>
+
+                {/* Project Card 4 */}
+                <a href="#" className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all hover:bg-zinc-800/50 hover:border-zinc-700">
+                  <div>
+                    <div className="mb-4 flex items-center justify-between">
+                      <h4 className="font-semibold text-zinc-100">RL & Evolutionary Algos</h4>
+                      <Github className="h-5 w-5 text-zinc-500 group-hover:text-zinc-300" />
+                    </div>
+                    <p className="text-sm text-zinc-400 mb-4 line-clamp-3">
+                      Implemented minimax, Q-learning, and MCTS on gym environments including tic-tac-toe, blackjack, and Atari games.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">RL</span>
+                    <span className="rounded-full bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-300">Python</span>
+                  </div>
+                </a>
+
+              </div>
+            </motion.section>
+
+            {/* Academic Achievements */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-100">Academic Achievements</h3>
+              <ul className="space-y-4 text-sm">
+                <li className="flex gap-4">
+                  <span className="text-zinc-500 font-mono shrink-0">ISI</span>
+                  <span>Qualified for direct admission to M.Stat. program with a government funded stipend.</span>
+                </li>
+                <li className="flex gap-4">
+                  <span className="text-zinc-500 font-mono shrink-0">ISI</span>
+                  <span>Admitted for B.Stat.(Hons.) program with a government funded stipend.</span>
+                </li>
+                <li className="flex gap-4">
+                  <span className="text-zinc-500 font-mono shrink-0">JEE</span>
+                  <span>Ranked amongst top 0.1 percentile in Joint Entrance Examination - Mains amongst 1 Million candidates.</span>
+                </li>
+              </ul>
+            </motion.section>
+
+            {/* Languages & Hobbies */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-8"
+            >
+              <div>
+                <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-zinc-100">Languages</h3>
+                <ul className="space-y-2 text-sm text-zinc-400">
+                  <li><strong className="text-zinc-200 font-medium">English:</strong> Full professional</li>
+                  <li><strong className="text-zinc-200 font-medium">Bengali:</strong> Native/bilingual</li>
+                  <li><strong className="text-zinc-200 font-medium">Hindi:</strong> Native/bilingual</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-zinc-100">Hobbies</h3>
+                <p className="text-sm text-zinc-400">Music, Table Tennis, Coding</p>
               </div>
             </motion.section>
 
