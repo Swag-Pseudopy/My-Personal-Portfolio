@@ -12,7 +12,14 @@ export default function Portfolio() {
           {/* Left Sidebar */}
           <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
             <div>
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col items-start">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-2 border-zinc-800 mb-6 shrink-0"
+                >
+                  <Image src="/profile.jpg" alt="Swagato Das" width={160} height={160} className="object-cover w-full h-full" />
+                </motion.div>
                 <div>
                   <motion.h1
                     initial={{ opacity: 0, y: 20 }}
@@ -39,14 +46,6 @@ export default function Portfolio() {
                     <span className="text-zinc-200 font-medium">Research interests:</span> Deep Learning, Generative Models, Causal Inference, and Non-Parametric Clustering.
                   </motion.p>
                 </div>
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="hidden lg:block w-32 h-32 rounded-full overflow-hidden border-2 border-zinc-800 shrink-0 ml-4"
-                >
-                  <Image src="/profile.jpg" alt="Swagato Das" width={128} height={128} className="object-cover w-full h-full" />
-                </motion.div>
               </div>
 
               {/* Navigation / Contact */}
@@ -98,13 +97,6 @@ export default function Portfolio() {
 
           {/* Right Content */}
           <main className="pt-24 lg:w-1/2 lg:py-24 flex flex-col gap-24">
-            
-            {/* Mobile Image */}
-            <div className="lg:hidden flex justify-center mb-8">
-               <div className="w-40 h-40 rounded-full overflow-hidden border-2 border-zinc-800">
-                  <Image src="/profile.jpg" alt="Swagato Das" width={160} height={160} className="object-cover w-full h-full" />
-               </div>
-            </div>
 
             {/* Education */}
             <motion.section
