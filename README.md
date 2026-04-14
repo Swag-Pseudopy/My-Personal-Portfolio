@@ -1,20 +1,37 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Swagato Das | Academic Portfolio
 
-# Run and deploy your AI Studio app
+[![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fswagato.vercel.app&up_message=Live&down_message=Offline&style=flat-square&label=Portfolio)](https://swagato.vercel.app)
+[![Framework](https://img.shields.io/badge/Framework-Next.js-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Styling](https://img.shields.io/badge/Styling-Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
 
-This contains everything you need to run your app locally.
+A modern, responsive academic portfolio documenting my research, projects, and learning journey as a Master of Statistics (M.Stat) student at the Indian Statistical Institute (ISI), Kolkata.
 
-View your app in AI Studio: https://ai.studio/apps/1fa34998-295a-4144-80dd-20e7230d8028
+**Live Site:** [swagato.vercel.app](https://swagato.vercel.app)
 
-## Run Locally
+## 🔬 About 
 
-**Prerequisites:**  Node.js
+This repository contains the source code for my personal hub on the web. It bridges my academic background in rigorous statistical theory with modern computational approaches. 
 
+**Core Focus Areas:**
+* **Generative Models:** Flow Matching, Diffusion Processes, and Neural ODEs.
+* **Statistical Learning:** Non-Parametric Clustering (e.g., Hyperbolic Fuzzy C-Means), Convex Optimization.
+* **Causal Inference:** Moving from correlation to causation in high-dimensional datasets.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🛠️ Technical Stack
+
+This project is built with performance, accessibility, and clean design in mind:
+* **Framework:** Next.js 15 (App Router, React 19)
+* **Styling:** Tailwind CSS v4
+* **Animations:** Framer Motion
+* **Icons:** Lucide React
+* **Language:** TypeScript
+* **Deployment:** Vercel
+
+## 🚀 Running Locally
+
+To run this portfolio on your local machine, follow these steps:
+
+**1. Clone the repository**
+```bash
+git clone [https://github.com/Swag-Pseudopy/your-repo-name.git](https://github.com/Swag-Pseudopy/your-repo-name.git)
+cd your-repo-name
