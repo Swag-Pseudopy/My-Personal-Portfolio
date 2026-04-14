@@ -35,3 +35,32 @@ To run this portfolio on your local machine, follow these steps:
 ```bash
 git clone [https://github.com/Swag-Pseudopy/your-repo-name.git](https://github.com/Swag-Pseudopy/your-repo-name.git)
 cd your-repo-name
+```
+
+**2. Install dependencies**
+```bash
+npm install
+````
+
+**3. Start the development server**
+
+```bash
+npm run dev
+```
+
+**4. View the application**
+Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) in your browser to see the result.
+
+## 📂 Project Structure
+
+  * **/app** - Contains the main Next.js App Router layout, page components, and global CSS.
+  * **/public** - Static assets including `profile.jpg` and `Swagato_Das_CV.pdf`.
+  * **/lib** & **/hooks** - Utility functions (like class merging) and custom React hooks (e.g., mobile responsiveness).
+
+## 📬 Connect
+
+  * **Email:** [swagato.isi2227@gmail.com](mailto:swagato.isi2227@gmail.com)
+
+-----
+
+*Designed and built with Next.js and Tailwind CSS.*
