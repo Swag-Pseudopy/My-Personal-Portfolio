@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { Github, Linkedin, Mail, Phone, Download, Moon, Sun, ExternalLink, BookOpen, FileText, X } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, Download, Moon, Sun, Monitor, ExternalLink, BookOpen, FileText, X } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -139,15 +139,27 @@ export default function Portfolio() {
                     <Image src="/profile.jpg" alt="Swagato Das" width={160} height={160} className="object-cover w-full h-full" />
                   </motion.div>
 
+                  {/* The new 3-way toggle button with the glowing neon box-shadow */}
                   {mounted && (
                     <motion.button
                       initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                      className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all shadow-sm hover:shadow-md"
+                      animate={{ 
+                        opacity: 1,
+                        boxShadow: resolvedTheme === 'dark' 
+                          ? "0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(255, 0, 255, 0.2)" 
+                          : "0 0 10px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 69, 0, 0.2)"  
+                      }}
+                      onClick={() => {
+                        // Cycle: System -> Light -> Dark -> System
+                        if (theme === 'system') setTheme('light');
+                        else if (theme === 'light') setTheme('dark');
+                        else setTheme('system');
+                      }}
+                      className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all z-50 shadow-md hover:shadow-lg"
                       aria-label="Toggle theme"
+                      title={`Current theme: ${theme}`}
                     >
-                      {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                      {theme === 'system' ? <Monitor className="w-5 h-5" /> : theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                     </motion.button>
                   )}
                 </div>
