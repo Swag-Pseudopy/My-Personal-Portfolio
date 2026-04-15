@@ -6,6 +6,15 @@ import { useTheme } from "next-themes";
 export default function FluidWave() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { resolvedTheme } = useTheme();
+  
+  // Use refs to store mutable data so we don't trigger re-renders of the animation loop
+  const themeRef = useRef(resolvedTheme);
+  const timeRef = useRef(0);
+
+  // Update the theme ref whenever it changes, without restarting the canvas loop
+  useEffect(() => {
+    themeRef.current = resolvedTheme;
+  }, [resolvedTheme]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -14,8 +23,7 @@ export default function FluidWave() {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let time = 0;
-    let mouseX = -1000; // Initialize off-screen
+    let mouseX = -1000; 
     let mouseY = -1000;
     let targetMouseX = -1000;
     let targetMouseY = -1000;
@@ -35,44 +43,40 @@ export default function FluidWave() {
     resize();
 
     const render = () => {
-      time += 0.005; // Speed of the natural wave flow
+      timeRef.current += 0.005; 
+      const time = timeRef.current;
       
-      // Smooth out the mouse movement (easing)
       mouseX += (targetMouseX - mouseX) * 0.05;
       mouseY += (targetMouseY - mouseY) * 0.05;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Subdued, minimalist colors depending on the theme
-      const isDark = resolvedTheme === "dark";
-      ctx.strokeStyle = isDark ? "rgba(100, 200, 255, 0.15)" : "rgba(50, 100, 200, 0.25)";
-      ctx.lineWidth = 1.5;
+      // Check the ref to see if we are in dark or light mode
+      const isDark = themeRef.current === "dark";
+      
+      // VIBRANT colors for light mode, subtle for dark mode.
+      ctx.strokeStyle = isDark ? "rgba(100, 200, 255, 0.08)" : "rgba(14, 165, 233, 0.45)"; // Sky blue for light mode
+      ctx.lineWidth = isDark ? 1.5 : 2.0;
 
-      // Draw two overlapping waves for depth
       const numWaves = 5;
       for (let w = 0; w < numWaves; w++) {
         ctx.beginPath();
         
-        // Vary the properties for each individual wave to create a 3D depth effect
         const waveSpeed = time * (1 + w * 0.1); 
         const phaseOffset = w * 2.5; 
-        const baseAmplitude = 100 + (w * 20); // Waves get progressively taller
+        const baseAmplitude = 100 + (w * 20); 
         
         for (let i = 0; i < canvas.width; i += 5) {
-          // Base math for the flowing wave
           let y = (canvas.height / 2) + Math.sin((i * 0.002) + waveSpeed + phaseOffset) * baseAmplitude;
 
-          // Calculate distance from current point to mouse cursor
           const dx = i - mouseX;
           const dy = y - mouseY;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          const interactionRadius = 450; // <-- 1. Change this for a wider reach
-          
-          // Perturb the wave if the cursor is nearby
+          const interactionRadius = 450;
+
           if (distance < interactionRadius) {
             const force = (interactionRadius - distance) / interactionRadius;
-            // The ripple effect
-            y += Math.sin(time * 5 + i * 0.01) * force * 120; // <-- 2. Change the "50" for a taller ripple
+            y += Math.sin(time * 5 + i * 0.01) * force * 120; 
           }
 
           if (i === 0) ctx.moveTo(i, y);
@@ -91,13 +95,13 @@ export default function FluidWave() {
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [resolvedTheme]);
+  }, []); // Empty dependency array means this loop starts once and never resets!
 
-  // The canvas stays fixed in the background
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 -z-10 bg-transparent pointer-events-none" 
+      // The canvas itself manages the true background color now
+      className="fixed inset-0 -z-10 bg-white dark:bg-black pointer-events-none transition-colors duration-700" 
     />
   );
 }
