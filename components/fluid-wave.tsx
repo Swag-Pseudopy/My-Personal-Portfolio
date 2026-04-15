@@ -3,22 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 
-type Particle = {
-  x: number;
-  y: number;
-  angle: number;
-  speed: number;
-  size: number;
-  baseOpacity: number;
-  id: number;
-};
-
-export default function LuminousRibbons() {
+export default function NeonContinuousRibbon() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const particlesRef = useRef<Particle[]>([]);
   const timeRef = useRef(0);
   const themeRef = useRef(resolvedTheme);
   const animationFrameIdRef = useRef<number | undefined>(undefined);
@@ -27,11 +16,12 @@ export default function LuminousRibbons() {
     setMounted(true);
   }, []);
 
-  // Sync theme changes to ref so canvas doesn't reset on toggle
+  // Sync theme dynamically without resetting the animation loop
   useEffect(() => {
     themeRef.current = resolvedTheme;
   }, [resolvedTheme]);
 
+  // Notice: resolvedTheme is NOT in this dependency array!
   useEffect(() => {
     if (!mounted) return;
     const canvas = canvasRef.current;
@@ -39,10 +29,14 @@ export default function LuminousRibbons() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const mouse = { x: -1000, y: -1000, radius: 450 };
+    let mouseX = -1000;
+    let mouseY = -1000;
+    let targetMouseX = -1000;
+    let targetMouseY = -1000;
+
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      targetMouseX = e.clientX;
+      targetMouseY = e.clientY;
     };
     window.addEventListener("mousemove", handleMouseMove);
 
@@ -51,85 +45,67 @@ export default function LuminousRibbons() {
       canvas.height = window.innerHeight;
     };
     window.addEventListener("resize", resize);
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const initializeParticles = () => {
-      particlesRef.current = [];
-      const numParticles = 1000;
-
-      for (let i = 0; i < numParticles; i++) {
-        const ribbonIndex = i % 5;
-        
-        particlesRef.current.push({
-          x: (i / numParticles) * canvas.width,
-          y: Math.random() * canvas.height,
-          angle: (i / numParticles) * Math.PI * 2,
-          speed: 1 + Math.random() * 2,
-          size: 1 + Math.random() * 4,
-          baseOpacity: 0.1 + Math.random() * 0.2, // Base opacity stored here
-          id: ribbonIndex,
-        });
-      }
-    };
-
-    initializeParticles();
+    resize();
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      timeRef.current += 0.005; 
+      
+      timeRef.current += 0.005;
       const time = timeRef.current;
 
+      mouseX += (targetMouseX - mouseX) * 0.1;
+      mouseY += (targetMouseY - mouseY) * 0.1;
+
       ctx.globalCompositeOperation = 'lighter';
-      const particles = particlesRef.current;
 
       // Check current theme dynamically mid-flight
       const isDark = themeRef.current === "dark";
-      const darkColors = ["rgba(0, 255, 255, 1)", "rgba(255, 0, 255, 1)"]; // Neon Cyan/Magenta
-      const lightColors = ["rgba(255, 215, 0, 1)", "rgba(255, 69, 0, 1)"];  // Vibrant Yellow/Orange
+      const darkColors = ["rgba(0, 255, 255, 0.3)", "rgba(255, 0, 255, 0.3)"];
+      const lightColors = ["rgba(255, 215, 0, 0.4)", "rgba(255, 69, 0, 0.4)"];
       const activePalette = isDark ? darkColors : lightColors;
 
-      for (let p of particles) {
-        const ribbonOffset = p.id * (Math.PI / 2.5);
-        const dynamicAmplitude = Math.sin(time + p.angle) * 100;
-        
-        const defaultY = 
-          (canvas.height / 2) + 
-          (dynamicAmplitude + 
-          Math.sin(time * 2 + p.angle * 2 + ribbonOffset) * (canvas.height * 0.2));
-
-        let y = defaultY + Math.sin(p.angle) * 50;
-
-        const dx = p.x - mouse.x;
-        const dy = y - mouse.y;
-        const distSq = dx * dx + dy * dy;
-        const interactionRadiusSq = mouse.radius * mouse.radius;
-
-        if (distSq < interactionRadiusSq) {
-          const dist = Math.sqrt(distSq);
-          const force = (mouse.radius - dist) / mouse.radius;
-          y += Math.sin(time * 10 + p.angle * 15) * force * 150; 
-        }
-
-        // Apply color dynamically based on themeRef
-        ctx.fillStyle = activePalette[p.id % activePalette.length];
-        ctx.globalAlpha = isDark ? p.baseOpacity * 0.4 : p.baseOpacity * 0.6;
-        
+      const numLines = 15; 
+      
+      for (let r = 0; r < numLines; r++) {
         ctx.beginPath();
-        ctx.arc(p.x, y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        p.x += p.speed;
         
-        if (p.x > canvas.width) {
-          p.x = 0;
-          p.angle = Math.random() * Math.PI * 2;
+        ctx.strokeStyle = activePalette[r % activePalette.length];
+        ctx.lineWidth = isDark ? 2 : 3;
+        ctx.shadowBlur = isDark ? 15 : 10;
+        ctx.shadowColor = ctx.strokeStyle;
+
+        const speed = time * 1.2;
+        const phaseOffset = r * 0.1; 
+        const baseAmplitude = 100 + Math.sin(time + r) * 20;
+
+        for (let x = 0; x <= canvas.width; x += 4) {
+          
+          let y = (canvas.height / 2) 
+            + Math.sin((x * 0.002) + speed + phaseOffset) * baseAmplitude
+            + Math.sin((x * 0.005) - speed * 0.8 + phaseOffset) * (baseAmplitude * 0.4);
+
+          const dx = x - mouseX;
+          const dy = y - mouseY;
+          const distSq = dx * dx + dy * dy;
+          const interactionRadius = 450;
+          const radiusSq = interactionRadius * interactionRadius;
+
+          if (distSq < radiusSq) {
+            const dist = Math.sqrt(distSq);
+            const force = Math.pow((interactionRadius - dist) / interactionRadius, 2); 
+            y += Math.sin(time * 10 + x * 0.015) * force * 150; 
+          }
+
+          if (x === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
         }
+        ctx.stroke();
       }
       
       ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 1;
 
       animationFrameIdRef.current = requestAnimationFrame(animate);
     };
