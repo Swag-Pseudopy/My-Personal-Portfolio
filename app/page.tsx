@@ -43,7 +43,7 @@ const PROJECTS = [
 ];
 
 export default function Portfolio() {
-  const { setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
 
