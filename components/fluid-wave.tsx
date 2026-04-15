@@ -49,22 +49,30 @@ export default function FluidWave() {
       ctx.lineWidth = 1.5;
 
       // Draw two overlapping waves for depth
-      for (let waveOffset = 0; waveOffset < 2; waveOffset++) {
+      const numWaves = 5;
+      for (let w = 0; w < numWaves; w++) {
         ctx.beginPath();
+        
+        // Vary the properties for each individual wave to create a 3D depth effect
+        const waveSpeed = time * (1 + w * 0.1); 
+        const phaseOffset = w * 2.5; 
+        const baseAmplitude = 100 + (w * 20); // Waves get progressively taller
+        
         for (let i = 0; i < canvas.width; i += 5) {
           // Base math for the flowing wave
-          let y = (canvas.height / 2) + Math.sin((i * 0.003) + time + waveOffset) * 150;
+          let y = (canvas.height / 2) + Math.sin((i * 0.002) + waveSpeed + phaseOffset) * baseAmplitude;
 
           // Calculate distance from current point to mouse cursor
           const dx = i - mouseX;
           const dy = y - mouseY;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          const interactionRadius = 250;
-
+          const interactionRadius = 450; // <-- 1. Change this for a wider reach
+          
           // Perturb the wave if the cursor is nearby
           if (distance < interactionRadius) {
             const force = (interactionRadius - distance) / interactionRadius;
-            y += Math.sin(time * 5 + i * 0.01) * force * 40; 
+            // The ripple effect
+            y += Math.sin(time * 5 + i * 0.01) * force * 120; // <-- 2. Change the "50" for a taller ripple
           }
 
           if (i === 0) ctx.moveTo(i, y);
