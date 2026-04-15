@@ -1,38 +1,49 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 
-export default function FluidWave() {
+type Particle = {
+  x: number;
+  y: number;
+  angle: number;
+  speed: number;
+  size: number;
+  baseOpacity: number;
+  id: number;
+};
+
+export default function LuminousRibbons() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { resolvedTheme } = useTheme();
-  
-  // Use refs to store mutable data so we don't trigger re-renders of the animation loop
-  const themeRef = useRef(resolvedTheme);
-  const timeRef = useRef(0);
+  const [mounted, setMounted] = useState(false);
 
-  // Update the theme ref whenever it changes, without restarting the canvas loop
+  const particlesRef = useRef<Particle[]>([]);
+  const timeRef = useRef(0);
+  const themeRef = useRef(resolvedTheme);
+  const animationFrameIdRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Sync theme changes to ref so canvas doesn't reset on toggle
   useEffect(() => {
     themeRef.current = resolvedTheme;
   }, [resolvedTheme]);
 
   useEffect(() => {
+    if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId: number;
-    let mouseX = -1000; 
-    let mouseY = -1000;
-    let targetMouseX = -1000;
-    let targetMouseY = -1000;
-
+    const mouse = { x: -1000, y: -1000, radius: 450 };
     const handleMouseMove = (e: MouseEvent) => {
-      targetMouseX = e.clientX;
-      targetMouseY = e.clientY;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     };
-    
     window.addEventListener("mousemove", handleMouseMove);
 
     const resize = () => {
@@ -40,67 +51,103 @@ export default function FluidWave() {
       canvas.height = window.innerHeight;
     };
     window.addEventListener("resize", resize);
-    resize();
 
-    const render = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const initializeParticles = () => {
+      particlesRef.current = [];
+      const numParticles = 1000;
+
+      for (let i = 0; i < numParticles; i++) {
+        const ribbonIndex = i % 5;
+        
+        particlesRef.current.push({
+          x: (i / numParticles) * canvas.width,
+          y: Math.random() * canvas.height,
+          angle: (i / numParticles) * Math.PI * 2,
+          speed: 1 + Math.random() * 2,
+          size: 1 + Math.random() * 4,
+          baseOpacity: 0.1 + Math.random() * 0.2, // Base opacity stored here
+          id: ribbonIndex,
+        });
+      }
+    };
+
+    initializeParticles();
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       timeRef.current += 0.005; 
       const time = timeRef.current;
-      
-      mouseX += (targetMouseX - mouseX) * 0.05;
-      mouseY += (targetMouseY - mouseY) * 0.05;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'lighter';
+      const particles = particlesRef.current;
 
-      // Check the ref to see if we are in dark or light mode
+      // Check current theme dynamically mid-flight
       const isDark = themeRef.current === "dark";
-      
-      // VIBRANT colors for light mode, subtle for dark mode.
-      ctx.strokeStyle = isDark ? "rgba(100, 200, 255, 0.08)" : "rgba(14, 165, 233, 0.45)"; // Sky blue for light mode
-      ctx.lineWidth = isDark ? 1.5 : 2.0;
+      const darkColors = ["rgba(0, 255, 255, 1)", "rgba(255, 0, 255, 1)"]; // Neon Cyan/Magenta
+      const lightColors = ["rgba(255, 215, 0, 1)", "rgba(255, 69, 0, 1)"];  // Vibrant Yellow/Orange
+      const activePalette = isDark ? darkColors : lightColors;
 
-      const numWaves = 5;
-      for (let w = 0; w < numWaves; w++) {
-        ctx.beginPath();
+      for (let p of particles) {
+        const ribbonOffset = p.id * (Math.PI / 2.5);
+        const dynamicAmplitude = Math.sin(time + p.angle) * 100;
         
-        const waveSpeed = time * (1 + w * 0.1); 
-        const phaseOffset = w * 2.5; 
-        const baseAmplitude = 100 + (w * 20); 
-        
-        for (let i = 0; i < canvas.width; i += 5) {
-          let y = (canvas.height / 2) + Math.sin((i * 0.002) + waveSpeed + phaseOffset) * baseAmplitude;
+        const defaultY = 
+          (canvas.height / 2) + 
+          (dynamicAmplitude + 
+          Math.sin(time * 2 + p.angle * 2 + ribbonOffset) * (canvas.height * 0.2));
 
-          const dx = i - mouseX;
-          const dy = y - mouseY;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const interactionRadius = 450;
+        let y = defaultY + Math.sin(p.angle) * 50;
 
-          if (distance < interactionRadius) {
-            const force = (interactionRadius - distance) / interactionRadius;
-            y += Math.sin(time * 5 + i * 0.01) * force * 120; 
-          }
+        const dx = p.x - mouse.x;
+        const dy = y - mouse.y;
+        const distSq = dx * dx + dy * dy;
+        const interactionRadiusSq = mouse.radius * mouse.radius;
 
-          if (i === 0) ctx.moveTo(i, y);
-          else ctx.lineTo(i, y);
+        if (distSq < interactionRadiusSq) {
+          const dist = Math.sqrt(distSq);
+          const force = (mouse.radius - dist) / mouse.radius;
+          y += Math.sin(time * 10 + p.angle * 15) * force * 150; 
         }
-        ctx.stroke();
-      }
 
-      animationFrameId = requestAnimationFrame(render);
+        // Apply color dynamically based on themeRef
+        ctx.fillStyle = activePalette[p.id % activePalette.length];
+        ctx.globalAlpha = isDark ? p.baseOpacity * 0.4 : p.baseOpacity * 0.6;
+        
+        ctx.beginPath();
+        ctx.arc(p.x, y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        p.x += p.speed;
+        
+        if (p.x > canvas.width) {
+          p.x = 0;
+          p.angle = Math.random() * Math.PI * 2;
+        }
+      }
+      
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+
+      animationFrameIdRef.current = requestAnimationFrame(animate);
     };
-    
-    render();
+
+    animate();
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameIdRef.current !== undefined) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
     };
-  }, []); // Empty dependency array means this loop starts once and never resets!
+  }, [mounted]); // Only run once on mount!
 
   return (
     <canvas 
       ref={canvasRef} 
-      // The canvas itself manages the true background color now
       className="fixed inset-0 -z-10 bg-white dark:bg-black pointer-events-none transition-colors duration-700" 
     />
   );
