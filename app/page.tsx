@@ -139,12 +139,18 @@ export default function Portfolio() {
                     <Image src="/profile.jpg" alt="Swagato Das" width={160} height={160} className="object-cover w-full h-full" />
                   </motion.div>
 
+                  {/* Theme Toggle Button */}
                   {mounted && (
                     <motion.button
                       initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      animate={{ 
+                        opacity: 1,
+                        boxShadow: resolvedTheme === 'dark' 
+                          ? "0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(255, 0, 255, 0.2)" 
+                          : "0 0 10px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 69, 0, 0.2)"  
+                      }}
                       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                      className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all shadow-sm hover:shadow-md"
+                      className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all z-50 shadow-md hover:shadow-lg"
                       aria-label="Toggle theme"
                     >
                       {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -301,7 +307,6 @@ export default function Portfolio() {
               </div>
             </motion.section>
 
-            {/* Interests & Skills omitted for brevity in response, keep them exactly as they were in previous steps */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Interests</h3>
               <p className="leading-relaxed text-sm">
