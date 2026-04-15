@@ -1,12 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { Github, Linkedin, Mail, Phone, Download, Moon, Sun, ExternalLink, BookOpen, FileText, X } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, Download, Moon, Sun, Monitor, ExternalLink, BookOpen, FileText, X } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-// Project Data Array for easy mapping and state management
 const PROJECTS = [
   {
     id: "selex",
@@ -43,13 +42,12 @@ const PROJECTS = [
 ];
 
 export default function Portfolio() {
-  const { setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
 
   useEffect(() => setMounted(true), []);
 
-  // Prevent background scrolling when project is expanded
   useEffect(() => {
     if (selectedProject) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
@@ -59,7 +57,6 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen text-zinc-600 dark:text-zinc-400 selection:bg-zinc-200 dark:selection:bg-zinc-800 selection:text-zinc-900 dark:selection:text-zinc-200 transition-colors duration-300">
       
-      {/* EXPANDED PROJECT MODAL */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
@@ -67,17 +64,15 @@ export default function Portfolio() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedProject(null)}
-            // The overlay: Centers on mobile. On desktop, restricts to the right half.
             className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:left-1/2 lg:w-1/2 lg:p-12 cursor-pointer"
           >
-            {/* Soft, glowing backdrop that fades to edges */}
             <div className="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md" 
                  style={{ maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)' }} 
             />
 
             <motion.div
               layoutId={`project-card-${selectedProject.id}`}
-              onClick={(e) => e.stopPropagation()} // Prevent close when clicking card
+              onClick={(e) => e.stopPropagation()} 
               className="relative w-full max-w-2xl overflow-hidden rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/90 p-8 shadow-2xl ring-1 ring-zinc-200 dark:ring-zinc-800 cursor-default"
             >
               <button 
@@ -124,12 +119,10 @@ export default function Portfolio() {
       <div className="mx-auto min-h-screen max-w-screen-xl px-6 py-12 md:px-12 md:py-20 lg:px-24 lg:py-0">
         <div className="lg:flex lg:justify-between lg:gap-4">
           
-          {/* Left Sidebar */}
           <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
             <div>
               <div className="flex flex-col items-start w-full">
                 
-                {/* Profile Pic & Theme Toggle Row */}
                 <div className="flex w-full justify-between items-start mb-6">
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -139,7 +132,6 @@ export default function Portfolio() {
                     <Image src="/profile.jpg" alt="Swagato Das" width={160} height={160} className="object-cover w-full h-full" />
                   </motion.div>
 
-                  {/* Theme Toggle Button */}
                   {mounted && (
                     <motion.button
                       initial={{ opacity: 0 }}
@@ -149,11 +141,16 @@ export default function Portfolio() {
                           ? "0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(255, 0, 255, 0.2)" 
                           : "0 0 10px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 69, 0, 0.2)"  
                       }}
-                      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                      onClick={() => {
+                        if (theme === 'system') setTheme('light');
+                        else if (theme === 'light') setTheme('dark');
+                        else setTheme('system');
+                      }}
                       className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all z-50 shadow-md hover:shadow-lg"
                       aria-label="Toggle theme"
+                      title={`Current theme: ${theme}`}
                     >
-                      {resolvedTheme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                      {theme === 'system' ? <Monitor className="w-5 h-5" /> : theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                     </motion.button>
                   )}
                 </div>
@@ -172,7 +169,6 @@ export default function Portfolio() {
                 </div>
               </div>
 
-              {/* Navigation / Contact */}
               <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mt-8 flex items-center gap-5">
                 <li><a href="https://github.com/Swag-Pseudopy" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><span className="sr-only">GitHub</span><Github className="h-6 w-6" /></a></li>
                 <li><a href="https://linkedin.com/in/swagato-das" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><span className="sr-only">LinkedIn</span><Linkedin className="h-6 w-6" /></a></li>
@@ -188,10 +184,8 @@ export default function Portfolio() {
             </div>
           </header>
 
-          {/* Right Content */}
           <main className="pt-24 lg:w-1/2 lg:py-24 flex flex-col gap-24">
 
-            {/* Education */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Education</h3>
               <div className="space-y-8">
@@ -222,7 +216,6 @@ export default function Portfolio() {
               </div>
             </motion.section>
 
-            {/* Relevant Coursework */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Relevant Coursework</h3>
               <p className="leading-relaxed text-sm">
@@ -230,7 +223,6 @@ export default function Portfolio() {
               </p>
             </motion.section>
 
-            {/* Experience */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Experience</h3>
               <div className="space-y-12">
@@ -272,7 +264,6 @@ export default function Portfolio() {
               </div>
             </motion.section>
 
-            {/* Publications */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Publications</h3>
               <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
@@ -287,14 +278,12 @@ export default function Portfolio() {
                     Introduced Filtration-based Hyperbolic Fuzzy C-Means (HypeFCM), a novel clustering algorithm tailored for better representation of data relationships in non-Euclidean spaces using the Poincaré Disc model.
                   </p>
                   
-                  {/* Interactive Author Links */}
                   <div className="mt-4 flex flex-wrap gap-2">
                     <a href="https://swagato.vercel.app" className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Das S.</a>
                     <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50 cursor-default">Pratihar A.</span>
                     <a href="#" className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">Das S.</a>
                   </div>
 
-                  {/* External Resource Links */}
                   <div className="mt-4 flex items-center gap-4">
                     <a href="#" className="flex items-center gap-1.5 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 transition-colors">
                       <ExternalLink className="w-4 h-4" /> arXiv
@@ -336,7 +325,6 @@ export default function Portfolio() {
               </div>
             </motion.section>
 
-            {/* Projects */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Projects</h3>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -367,7 +355,6 @@ export default function Portfolio() {
               </div>
             </motion.section>
 
-            {/* Academic Achievements */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Academic Achievements</h3>
               <ul className="space-y-4 text-sm">
@@ -386,7 +373,6 @@ export default function Portfolio() {
               </ul>
             </motion.section>
 
-            {/* Languages & Hobbies */}
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div>
                 <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Languages</h3>
@@ -402,7 +388,6 @@ export default function Portfolio() {
               </div>
             </motion.section>
 
-            {/* Footer */}
             <footer className="max-w-md pb-16 text-sm text-zinc-500 sm:pb-0">
               <p>Designed and built with <span className="text-zinc-700 dark:text-zinc-300">Next.js</span>, <span className="text-zinc-700 dark:text-zinc-300">Tailwind CSS</span>, and <span className="text-zinc-700 dark:text-zinc-300">Framer Motion</span>.</p>
             </footer>
