@@ -8,29 +8,31 @@ type Particle = {
   y: number;
   angle: number;
   speed: number;
-  color: string;
   size: number;
-  opacity: number;
+  baseOpacity: number; // We now store base opacity here, not the hardcoded color
   id: number;
 };
 
-export default function LuminousRibbons() {
+export default function ElegantFluidRibbons() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Refs for animation state that persists across theme toggles
   const particlesRef = useRef<Particle[]>([]);
   const timeRef = useRef(0);
   const themeRef = useRef(resolvedTheme);
-  
-  // FIX: Added initial value 'undefined' to satisfy TypeScript
   const animationFrameIdRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Sync the theme to a ref so we can read it inside the loop without restarting it
+  useEffect(() => {
+    themeRef.current = resolvedTheme;
+  }, [resolvedTheme]);
+
+  // Notice: resolvedTheme is NO LONGER in this dependency array!
   useEffect(() => {
     if (!mounted) return;
     const canvas = canvasRef.current;
@@ -48,17 +50,11 @@ export default function LuminousRibbons() {
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      initializeParticles();
     };
     window.addEventListener("resize", resize);
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    const isDark = resolvedTheme === "dark";
-    const darkColors = ["rgba(0, 255, 255, 1)", "rgba(255, 0, 255, 1)"];
-    const lightColors = ["rgba(255, 215, 0, 1)", "rgba(255, 69, 0, 1)"];
-    const activePalette = isDark ? darkColors : lightColors;
 
     const initializeParticles = () => {
       particlesRef.current = [];
@@ -66,41 +62,46 @@ export default function LuminousRibbons() {
 
       for (let i = 0; i < numParticles; i++) {
         const ribbonIndex = i % 5;
-        const color = activePalette[ribbonIndex % activePalette.length];
         
         particlesRef.current.push({
           x: (i / numParticles) * canvas.width,
           y: Math.random() * canvas.height,
           angle: (i / numParticles) * Math.PI * 2,
-          speed: 1 + Math.random() * 2,
-          color: color,
-          size: 1 + Math.random() * 4,
-          opacity: 0.1 + Math.random() * 0.2,
+          speed: 0.5 + Math.random() * 1.5,
+          size: 1 + Math.random() * 3,
+          baseOpacity: 0.05 + Math.random() * 0.15,
           id: ribbonIndex,
         });
       }
     };
 
+    // Seed particles once
     initializeParticles();
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      timeRef.current += 0.005; 
+      timeRef.current += 0.003;
       const time = timeRef.current;
 
       ctx.globalCompositeOperation = 'lighter';
       const particles = particlesRef.current;
 
+      // Determine colors dynamically based on the current theme ref
+      const isDark = themeRef.current === "dark";
+      const darkColors = ["rgba(100, 150, 255, 1)", "rgba(50, 150, 200, 1)"];
+      const lightColors = ["rgba(14, 165, 233, 1)", "rgba(56, 189, 248, 1)"];
+      const activePalette = isDark ? darkColors : lightColors;
+
       for (let p of particles) {
         const ribbonOffset = p.id * (Math.PI / 2.5);
-        const dynamicAmplitude = Math.sin(time + p.angle) * 100;
+        const dynamicAmplitude = Math.sin(time + p.angle) * 80;
         
         const defaultY = 
           (canvas.height / 2) + 
           (dynamicAmplitude + 
-          Math.sin(time * 2 + p.angle * 2 + ribbonOffset) * (canvas.height * 0.2));
+          Math.sin(time * 1.5 + p.angle * 2 + ribbonOffset) * (canvas.height * 0.15));
 
-        let y = defaultY + Math.sin(p.angle) * 50;
+        let y = defaultY + Math.sin(p.angle) * 40;
 
         const dx = p.x - mouse.x;
         const dy = y - mouse.y;
@@ -110,11 +111,12 @@ export default function LuminousRibbons() {
         if (distSq < interactionRadiusSq) {
           const dist = Math.sqrt(distSq);
           const force = (mouse.radius - dist) / mouse.radius;
-          y += Math.sin(time * 10 + p.angle * 15) * force * 150; 
+          y += Math.sin(time * 8 + p.angle * 10) * force * 100;
         }
 
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = isDark ? p.opacity * 0.4 : p.opacity * 0.6;
+        // Apply color and opacity mid-flight
+        ctx.fillStyle = activePalette[p.id % activePalette.length];
+        ctx.globalAlpha = isDark ? p.baseOpacity * 0.25 : p.baseOpacity * 0.35;
         
         ctx.beginPath();
         ctx.arc(p.x, y, p.size, 0, Math.PI * 2);
@@ -143,7 +145,7 @@ export default function LuminousRibbons() {
         cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
-  }, [mounted, resolvedTheme]);
+  }, [mounted]); // <-- Removed resolvedTheme here!
 
   return (
     <canvas 
