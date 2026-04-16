@@ -37,7 +37,8 @@ export default function ChaoticRibbonWave() {
     if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: false }); // alpha: false boosts performance since bg is solid
+    // alpha: false keeps the massive performance boost
+    const ctx = canvas.getContext("2d", { alpha: false }); 
     if (!ctx) return;
 
     let mouseX = -1000;
@@ -59,16 +60,15 @@ export default function ChaoticRibbonWave() {
     resize();
 
     const animate = () => {
-      // Draw solid background based on theme (much faster than clearRect on some devices)
       const isDark = themeRef.current === "dark";
       ctx.fillStyle = isDark ? "#000000" : "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      timeRef.current += 0.003; 
+      timeRef.current += 0.0025; // Slightly slower base speed for a more elegant flow
       const time = timeRef.current;
 
-      mouseX += (targetMouseX - mouseX) * 0.1;
-      mouseY += (targetMouseY - mouseY) * 0.1;
+      mouseX += (targetMouseX - mouseX) * 0.08;
+      mouseY += (targetMouseY - mouseY) * 0.08;
 
       const isNeon = isNeonRef.current;
 
@@ -95,8 +95,8 @@ export default function ChaoticRibbonWave() {
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate(angle);
 
-      // Using 15 distinct line strands
-      const numStrands = 15; 
+      // Reduced to 12 strands to perfectly balance the smaller step size
+      const numStrands = 12; 
       
       for (let r = 0; r < numStrands; r++) {
         ctx.beginPath();
@@ -106,45 +106,41 @@ export default function ChaoticRibbonWave() {
         ctx.shadowBlur = isNeon ? (isDark ? 12 : 8) : 0;
         ctx.shadowColor = isNeon ? ctx.strokeStyle : "transparent";
 
-        const speed = time * 1.5;
+        const speed = time * 1.2;
         const phaseOffset = r * 0.15; 
-        
-        // This spreads the 15 lines out naturally so it looks like a ribbon
-        const naturalSpread = (r - numStrands / 2) * 5; 
+        const naturalSpread = (r - numStrands / 2) * 4; 
 
-        // Larger step size (10px) = drastically fewer calculations = buttery smooth 60fps
-        for (let x = -span; x <= span; x += 10) { 
+        // Step size 4 restores the perfectly smooth curve
+        for (let x = -span; x <= span; x += 4) { 
           
           let baseY = Math.sin((x * 0.002) + speed + phaseOffset) * 90
-                    + Math.sin((x * 0.005) - speed * 0.8 + phaseOffset) * 45
+                    + Math.sin((x * 0.004) - speed * 0.7 + phaseOffset) * 40
                     + naturalSpread;
 
           const dx = x - rMouseX;
           const dy = baseY - rMouseY;
           const distSq = dx * dx + dy * dy;
-          const interactionRadius = 350;
+          const interactionRadius = 400; // Slightly larger interaction area
           const radiusSq = interactionRadius * interactionRadius;
 
           let finalY = baseY;
 
-          // If the mouse is near, apply the interactive dispersion!
           if (distSq < radiusSq) {
             const dist = Math.sqrt(distSq);
+            // Smoother falloff curve for the force
             const force = Math.pow((interactionRadius - dist) / interactionRadius, 2); 
             
-            // Outer strands push away harder than inner strands, causing the ribbon to "widen"
-            const flare = naturalSpread * force * 3; 
-            // Add a little chaotic high-frequency wave locally
-            const jitter = Math.sin(time * 20 + x * 0.1) * force * 20; 
+            const flare = naturalSpread * force * 4; 
+            // Lowered frequency (0.04) so the chaos flows smoothly rather than jaggedly
+            const fluidJitter = Math.sin(time * 12 + x * 0.04) * force * 30; 
             
-            finalY += flare + jitter;
+            finalY += flare + fluidJitter;
           }
 
           if (x === -span) ctx.moveTo(x, finalY);
           else ctx.lineTo(x, finalY);
         }
         
-        // Draw the entire strand in one single GPU operation
         ctx.stroke();
       }
       
@@ -168,7 +164,6 @@ export default function ChaoticRibbonWave() {
   return (
     <canvas 
       ref={canvasRef} 
-      // Removed bg-white/bg-black here since we are painting it directly in the canvas for speed
       className="fixed inset-0 -z-10 pointer-events-none" 
     />
   );
