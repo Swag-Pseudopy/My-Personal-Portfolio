@@ -37,7 +37,7 @@ export default function ChaoticRibbonWave() {
     if (!mounted) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: false }); // alpha: false boosts performance since bg is solid
     if (!ctx) return;
 
     let mouseX = -1000;
@@ -59,21 +59,23 @@ export default function ChaoticRibbonWave() {
     resize();
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Draw solid background based on theme (much faster than clearRect on some devices)
+      const isDark = themeRef.current === "dark";
+      ctx.fillStyle = isDark ? "#000000" : "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      timeRef.current += 0.003; // Slightly slower time for better particle flow
+      timeRef.current += 0.003; 
       const time = timeRef.current;
 
       mouseX += (targetMouseX - mouseX) * 0.1;
       mouseY += (targetMouseY - mouseY) * 0.1;
 
-      const isDark = themeRef.current === "dark";
       const isNeon = isNeonRef.current;
 
-      const neonDark = ["rgba(0, 255, 255, 0.6)", "rgba(255, 0, 255, 0.6)"];
-      const neonLight = ["rgba(255, 215, 0, 0.8)", "rgba(255, 69, 0, 0.8)"];
-      const mutedDark = ["rgba(100, 120, 150, 0.4)", "rgba(80, 100, 130, 0.4)"]; 
-      const mutedLight = ["rgba(160, 190, 220, 0.6)", "rgba(200, 180, 210, 0.6)"]; 
+      const neonDark = ["rgba(0, 255, 255, 0.4)", "rgba(255, 0, 255, 0.4)"];
+      const neonLight = ["rgba(255, 215, 0, 0.5)", "rgba(255, 69, 0, 0.5)"];
+      const mutedDark = ["rgba(100, 120, 150, 0.2)", "rgba(80, 100, 130, 0.2)"]; 
+      const mutedLight = ["rgba(160, 190, 220, 0.4)", "rgba(200, 180, 210, 0.4)"]; 
 
       let activePalette;
       if (isNeon) activePalette = isDark ? neonDark : neonLight;
@@ -93,23 +95,29 @@ export default function ChaoticRibbonWave() {
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate(angle);
 
-      const numStrands = 10; 
+      // Using 15 distinct line strands
+      const numStrands = 15; 
       
       for (let r = 0; r < numStrands; r++) {
-        ctx.fillStyle = activePalette[r % activePalette.length];
+        ctx.beginPath();
+        ctx.strokeStyle = activePalette[r % activePalette.length];
+        ctx.lineWidth = isDark ? 1.5 : 2.5;
         
-        ctx.shadowBlur = isNeon ? (isDark ? 10 : 8) : 0;
-        ctx.shadowColor = isNeon ? ctx.fillStyle : "transparent";
+        ctx.shadowBlur = isNeon ? (isDark ? 12 : 8) : 0;
+        ctx.shadowColor = isNeon ? ctx.strokeStyle : "transparent";
 
         const speed = time * 1.5;
-        const phaseOffset = r * 0.2; 
-        const baseAmplitude = 80 + Math.sin(time + r) * 30;
+        const phaseOffset = r * 0.15; 
+        
+        // This spreads the 15 lines out naturally so it looks like a ribbon
+        const naturalSpread = (r - numStrands / 2) * 5; 
 
-        // Iterate across the screen width
-        for (let x = -span; x <= span; x += 6) { // Step size dictates particle density horizontally
+        // Larger step size (10px) = drastically fewer calculations = buttery smooth 60fps
+        for (let x = -span; x <= span; x += 10) { 
           
-          let baseY = Math.sin((x * 0.002) + speed + phaseOffset) * baseAmplitude
-                    + Math.sin((x * 0.005) - speed * 0.8 + phaseOffset) * (baseAmplitude * 0.5);
+          let baseY = Math.sin((x * 0.002) + speed + phaseOffset) * 90
+                    + Math.sin((x * 0.005) - speed * 0.8 + phaseOffset) * 45
+                    + naturalSpread;
 
           const dx = x - rMouseX;
           const dy = baseY - rMouseY;
@@ -117,29 +125,27 @@ export default function ChaoticRibbonWave() {
           const interactionRadius = 350;
           const radiusSq = interactionRadius * interactionRadius;
 
-          // Base ribbon thickness
-          let dispersion = 4; 
+          let finalY = baseY;
 
-          // If the mouse is near, multiply the dispersion exponentially
+          // If the mouse is near, apply the interactive dispersion!
           if (distSq < radiusSq) {
             const dist = Math.sqrt(distSq);
             const force = Math.pow((interactionRadius - dist) / interactionRadius, 2); 
-            dispersion += force * 60; // Ribbon bursts up to 60px wide
-            baseY += Math.sin(time * 10 + x * 0.02) * force * 50; // Add chaotic vertical jitter
+            
+            // Outer strands push away harder than inner strands, causing the ribbon to "widen"
+            const flare = naturalSpread * force * 3; 
+            // Add a little chaotic high-frequency wave locally
+            const jitter = Math.sin(time * 20 + x * 0.1) * force * 20; 
+            
+            finalY += flare + jitter;
           }
 
-          // Draw 3 random particles at this X coordinate to form the "cloud" ribbon
-          for (let p = 0; p < 3; p++) {
-            // Randomly scatter the point vertically around the main mathematical curve
-            const scatterY = (Math.random() - 0.5) * dispersion * 2;
-            const finalY = baseY + scatterY;
-
-            ctx.beginPath();
-            // Dots are slightly larger in light mode to remain visible against white
-            ctx.arc(x, finalY, isDark ? 1.2 : 1.8, 0, Math.PI * 2);
-            ctx.fill();
-          }
+          if (x === -span) ctx.moveTo(x, finalY);
+          else ctx.lineTo(x, finalY);
         }
+        
+        // Draw the entire strand in one single GPU operation
+        ctx.stroke();
       }
       
       ctx.restore();
@@ -162,7 +168,8 @@ export default function ChaoticRibbonWave() {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 -z-10 bg-white dark:bg-black pointer-events-none transition-colors duration-700" 
+      // Removed bg-white/bg-black here since we are painting it directly in the canvas for speed
+      className="fixed inset-0 -z-10 pointer-events-none" 
     />
   );
 }
