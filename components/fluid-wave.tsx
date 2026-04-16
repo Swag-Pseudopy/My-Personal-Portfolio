@@ -10,15 +10,13 @@ export default function ChaoticRibbonWave() {
 
   const timeRef = useRef(0);
   const themeRef = useRef(resolvedTheme);
-  const isNeonRef = useRef(true); // Tracks our new aesthetic state
+  const isNeonRef = useRef(true); 
   
-  // The chaotic flow angle, determined once on load
   const flowAngleRef = useRef(0);
   const animationFrameIdRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     setMounted(true);
-    // Determine the chaotic flow direction once when the component mounts
     flowAngleRef.current = Math.random() * Math.PI * 2;
   }, []);
 
@@ -26,7 +24,6 @@ export default function ChaoticRibbonWave() {
     themeRef.current = resolvedTheme;
   }, [resolvedTheme]);
 
-  // Listen for the custom aesthetic toggle event from page.tsx
   useEffect(() => {
     const handleAestheticToggle = (e: Event) => {
       const customEvent = e as CustomEvent;
@@ -64,7 +61,7 @@ export default function ChaoticRibbonWave() {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      timeRef.current += 0.005;
+      timeRef.current += 0.003; // Slightly slower time for better particle flow
       const time = timeRef.current;
 
       mouseX += (targetMouseX - mouseX) * 0.1;
@@ -73,77 +70,79 @@ export default function ChaoticRibbonWave() {
       const isDark = themeRef.current === "dark";
       const isNeon = isNeonRef.current;
 
-      // Define Palettes based on state
-      const neonDark = ["rgba(0, 255, 255, 0.3)", "rgba(255, 0, 255, 0.3)"];
-      const neonLight = ["rgba(255, 215, 0, 0.4)", "rgba(255, 69, 0, 0.4)"];
-      const mutedDark = ["rgba(100, 120, 150, 0.15)", "rgba(80, 100, 130, 0.15)"]; // Slate/Ghostly
-      const mutedLight = ["rgba(160, 190, 220, 0.3)", "rgba(200, 180, 210, 0.3)"]; // Pastel Blue/Lavender
+      const neonDark = ["rgba(0, 255, 255, 0.6)", "rgba(255, 0, 255, 0.6)"];
+      const neonLight = ["rgba(255, 215, 0, 0.8)", "rgba(255, 69, 0, 0.8)"];
+      const mutedDark = ["rgba(100, 120, 150, 0.4)", "rgba(80, 100, 130, 0.4)"]; 
+      const mutedLight = ["rgba(160, 190, 220, 0.6)", "rgba(200, 180, 210, 0.6)"]; 
 
       let activePalette;
       if (isNeon) activePalette = isDark ? neonDark : neonLight;
       else activePalette = isDark ? mutedDark : mutedLight;
 
-      // Apply blending for Neon, normal drawing for Muted
       ctx.globalCompositeOperation = isNeon ? 'lighter' : 'source-over';
 
-      // To ensure the chaotic angle covers the whole screen, we draw a line long enough 
-      // to cover the diagonal of the monitor.
       const span = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
-      
-      // Calculate mouse coordinates relative to the rotated canvas
       const mx = mouseX - canvas.width / 2;
       const my = mouseY - canvas.height / 2;
       const angle = flowAngleRef.current;
+      
       const rMouseX = mx * Math.cos(-angle) - my * Math.sin(-angle);
       const rMouseY = mx * Math.sin(-angle) + my * Math.cos(-angle);
 
-      // Rotate the entire canvas context to create the chaotic flow angle
       ctx.save();
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate(angle);
 
-      const numLines = 15; 
+      const numStrands = 10; 
       
-      for (let r = 0; r < numLines; r++) {
-        ctx.beginPath();
+      for (let r = 0; r < numStrands; r++) {
+        ctx.fillStyle = activePalette[r % activePalette.length];
         
-        ctx.strokeStyle = activePalette[r % activePalette.length];
-        ctx.lineWidth = isDark ? 2 : 3;
-        
-        // Only apply glowing shadows if in Neon mode
-        ctx.shadowBlur = isNeon ? (isDark ? 15 : 10) : 0;
-        ctx.shadowColor = isNeon ? ctx.strokeStyle : "transparent";
+        ctx.shadowBlur = isNeon ? (isDark ? 10 : 8) : 0;
+        ctx.shadowColor = isNeon ? ctx.fillStyle : "transparent";
 
-        const speed = time * 1.2;
-        const phaseOffset = r * 0.1; 
-        const baseAmplitude = 100 + Math.sin(time + r) * 20;
+        const speed = time * 1.5;
+        const phaseOffset = r * 0.2; 
+        const baseAmplitude = 80 + Math.sin(time + r) * 30;
 
-        // Draw from well off-screen left to well off-screen right
-        for (let x = -span; x <= span; x += 4) {
+        // Iterate across the screen width
+        for (let x = -span; x <= span; x += 6) { // Step size dictates particle density horizontally
           
-          let y = Math.sin((x * 0.002) + speed + phaseOffset) * baseAmplitude
-                + Math.sin((x * 0.005) - speed * 0.8 + phaseOffset) * (baseAmplitude * 0.4);
+          let baseY = Math.sin((x * 0.002) + speed + phaseOffset) * baseAmplitude
+                    + Math.sin((x * 0.005) - speed * 0.8 + phaseOffset) * (baseAmplitude * 0.5);
 
-          // Apply ripple using the locally rotated mouse coordinates
           const dx = x - rMouseX;
-          const dy = y - rMouseY;
+          const dy = baseY - rMouseY;
           const distSq = dx * dx + dy * dy;
-          const interactionRadius = 450;
+          const interactionRadius = 350;
           const radiusSq = interactionRadius * interactionRadius;
 
+          // Base ribbon thickness
+          let dispersion = 4; 
+
+          // If the mouse is near, multiply the dispersion exponentially
           if (distSq < radiusSq) {
             const dist = Math.sqrt(distSq);
             const force = Math.pow((interactionRadius - dist) / interactionRadius, 2); 
-            y += Math.sin(time * 10 + x * 0.015) * force * 150; 
+            dispersion += force * 60; // Ribbon bursts up to 60px wide
+            baseY += Math.sin(time * 10 + x * 0.02) * force * 50; // Add chaotic vertical jitter
           }
 
-          if (x === -span) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+          // Draw 3 random particles at this X coordinate to form the "cloud" ribbon
+          for (let p = 0; p < 3; p++) {
+            // Randomly scatter the point vertically around the main mathematical curve
+            const scatterY = (Math.random() - 0.5) * dispersion * 2;
+            const finalY = baseY + scatterY;
+
+            ctx.beginPath();
+            // Dots are slightly larger in light mode to remain visible against white
+            ctx.arc(x, finalY, isDark ? 1.2 : 1.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
-        ctx.stroke();
       }
       
-      ctx.restore(); // Undo the rotation for the next frame
+      ctx.restore();
       ctx.globalCompositeOperation = 'source-over';
 
       animationFrameIdRef.current = requestAnimationFrame(animate);
