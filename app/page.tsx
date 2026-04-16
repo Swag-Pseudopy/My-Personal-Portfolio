@@ -207,7 +207,9 @@ export default function Portfolio() {
                 <li><a href="https://github.com/Swag-Pseudopy" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><span className="sr-only">GitHub</span><Github className="h-6 w-6" /></a></li>
                 <li><a href="https://linkedin.com/in/swagato-das" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><span className="sr-only">LinkedIn</span><Linkedin className="h-6 w-6" /></a></li>
                 <li><a href="mailto:swagato.isi2227@gmail.com" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><span className="sr-only">Email</span><Mail className="h-6 w-6" /></a></li>
-                <li><a href="tel:+919749794322" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><span className="sr-only">Phone</span><Phone className="h-6 w-6" /></a></li>
+                {/* Commented out until office number is acquired
+              <li><a href="tel:+91XXXXXXXXXX" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><span className="sr-only">Phone</span><Phone className="h-6 w-6" /></a></li>
+              */}
               </motion.ul>
               
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mt-8">
