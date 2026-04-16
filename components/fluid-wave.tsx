@@ -17,7 +17,6 @@ export default function ChaoticRibbonWave() {
 
   useEffect(() => {
     setMounted(true);
-    // Determine the chaotic flow direction once when the component mounts
     flowAngleRef.current = Math.random() * Math.PI * 2;
   }, []);
 
@@ -25,7 +24,6 @@ export default function ChaoticRibbonWave() {
     themeRef.current = resolvedTheme;
   }, [resolvedTheme]);
 
-  // Listen for the custom aesthetic toggle event from page.tsx
   useEffect(() => {
     const handleAestheticToggle = (e: Event) => {
       const customEvent = e as CustomEvent;
@@ -63,24 +61,23 @@ export default function ChaoticRibbonWave() {
     resize();
 
     const animate = () => {
-      // Fast solid background clearing
       const isDark = themeRef.current === "dark";
       ctx.fillStyle = isDark ? "#000000" : "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      timeRef.current += 0.0025; // Slower base speed for elegant flow
+      // Restored original speed parameter
+      timeRef.current += 0.005; 
       const time = timeRef.current;
 
-      // Easing for smooth mouse tracking
-      mouseX += (targetMouseX - mouseX) * 0.08;
-      mouseY += (targetMouseY - mouseY) * 0.08;
+      mouseX += (targetMouseX - mouseX) * 0.1;
+      mouseY += (targetMouseY - mouseY) * 0.1;
 
       const isNeon = isNeonRef.current;
 
-      // Solid color bases for the fake glow technique (no alpha here)
+      // Solid color bases for the fake glow technique
       const neonDark = ["rgba(0, 255, 255, 1)", "rgba(255, 0, 255, 1)"];
       const neonLight = ["rgba(255, 140, 0, 1)", "rgba(255, 0, 128, 1)"]; 
-      // Muted palettes can keep their alpha since they don't use the multi-stroke technique
+      // Muted palettes
       const mutedDark = ["rgba(100, 120, 150, 0.4)", "rgba(80, 100, 130, 0.4)"]; 
       const mutedLight = ["rgba(160, 190, 220, 0.6)", "rgba(200, 180, 210, 0.6)"]; 
 
@@ -88,7 +85,6 @@ export default function ChaoticRibbonWave() {
       if (isNeon) activePalette = isDark ? neonDark : neonLight;
       else activePalette = isDark ? mutedDark : mutedLight;
 
-      // Force source-over. Blending modes cause lag.
       ctx.globalCompositeOperation = 'source-over'; 
 
       const span = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
@@ -103,7 +99,8 @@ export default function ChaoticRibbonWave() {
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.rotate(angle);
 
-      const numStrands = 12; 
+      // Restored original 15 strands
+      const numStrands = 15; 
       
       for (let r = 0; r < numStrands; r++) {
         ctx.beginPath();
@@ -114,38 +111,36 @@ export default function ChaoticRibbonWave() {
         ctx.shadowColor = "transparent";
 
         const speed = time * 1.2;
-        const phaseOffset = r * 0.15; 
-        const naturalSpread = (r - numStrands / 2) * 4; 
+        // Restored original phase offset
+        const phaseOffset = r * 0.1; 
+        // Restored original base amplitude math
+        const baseAmplitude = 100 + Math.sin(time + r) * 20;
 
         // Step size 4 for perfectly smooth curves
         for (let x = -span; x <= span; x += 4) { 
           
-          let baseY = Math.sin((x * 0.002) + speed + phaseOffset) * 90
-                    + Math.sin((x * 0.004) - speed * 0.7 + phaseOffset) * 40
-                    + naturalSpread;
+          // Restored the exact original wave equation
+          let y = Math.sin((x * 0.002) + speed + phaseOffset) * baseAmplitude
+                + Math.sin((x * 0.005) - speed * 0.8 + phaseOffset) * (baseAmplitude * 0.4);
 
           const dx = x - rMouseX;
-          const dy = baseY - rMouseY;
+          const dy = y - rMouseY;
           const distSq = dx * dx + dy * dy;
-          const interactionRadius = 400; 
+          
+          // Restored original interaction radius
+          const interactionRadius = 450; 
           const radiusSq = interactionRadius * interactionRadius;
-
-          let finalY = baseY;
 
           if (distSq < radiusSq) {
             const dist = Math.sqrt(distSq);
+            // Restored original force curve
             const force = Math.pow((interactionRadius - dist) / interactionRadius, 2); 
-            
-            // Ribbon widening
-            const flare = naturalSpread * force * 4; 
-            // Smooth, fluid chaos
-            const fluidJitter = Math.sin(time * 12 + x * 0.04) * force * 30; 
-            
-            finalY += flare + fluidJitter;
+            // Restored original chaotic ripple
+            y += Math.sin(time * 10 + x * 0.015) * force * 150; 
           }
 
-          if (x === -span) ctx.moveTo(x, finalY);
-          else ctx.lineTo(x, finalY);
+          if (x === -span) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
         
         // --- THE FAKE GLOW RENDERING ---
@@ -156,12 +151,12 @@ export default function ChaoticRibbonWave() {
           ctx.stroke();
           
           // 2. Draw the "Core" (Thin, fully opaque)
-          ctx.lineWidth = isDark ? 1.5 : 2.5;
+          ctx.lineWidth = isDark ? 2 : 3; // Restored original dark mode line width
           ctx.globalAlpha = 1.0; 
           ctx.stroke();
         } else {
           // Muted Mode rendering
-          ctx.lineWidth = isDark ? 1.5 : 2.5;
+          ctx.lineWidth = isDark ? 2 : 3;
           ctx.globalAlpha = 1.0;
           ctx.stroke();
         }
