@@ -78,8 +78,10 @@ export default function ChaoticRibbonWave() {
       const neonDark = ["rgba(0, 255, 255, 1)", "rgba(255, 0, 255, 1)"];
       const neonLight = ["rgba(255, 140, 0, 1)", "rgba(255, 0, 128, 1)"]; 
       // Muted palettes
-      const mutedDark = ["rgba(100, 120, 150, 0.4)", "rgba(80, 100, 130, 0.4)"]; 
-      const mutedLight = ["rgba(160, 190, 220, 0.6)", "rgba(200, 180, 210, 0.6)"]; 
+      {/*const mutedDark = ["rgba(100, 120, 150, 0.4)", "rgba(80, 100, 130, 0.4)"]; 
+      const mutedLight = ["rgba(160, 190, 220, 0.6)", "rgba(200, 180, 210, 0.6)"];*/}
+      const mutedDark = ["rgba(120, 140, 180, 0.6)", "rgba(100, 120, 160, 0.6)"]; 
+      const mutedLight = ["rgba(120, 160, 220, 0.8)", "rgba(160, 140, 200, 0.8)"];
 
       let activePalette;
       if (isNeon) activePalette = isDark ? neonDark : neonLight;
