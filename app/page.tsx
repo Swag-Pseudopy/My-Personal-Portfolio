@@ -48,7 +48,7 @@ export default function Portfolio() {
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
   
   // State to track Neon vs Muted aesthetic
-  const [isNeon, setIsNeon] = useState(true);
+  const [isNeon, setIsNeon] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -174,16 +174,14 @@ export default function Portfolio() {
                               : "0 0 10px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 69, 0, 0.2)")
                             : "none"
                         }}
-                        onClick={() => {
-                          if (theme === 'system') setTheme('light');
-                          else if (theme === 'light') setTheme('dark');
-                          else setTheme('system');
-                        }}
+                        // Simplify the onClick to strictly toggle between light and dark
+                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                         className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all shadow-md hover:shadow-lg"
                         aria-label="Toggle theme"
                         title={`Current theme: ${theme}`}
                       >
-                        {theme === 'system' ? <Monitor className="w-5 h-5" /> : theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                        {/* Remove the monitor icon since system state is disabled */}
+                        {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                       </motion.button>
                     )}
                   </div>
