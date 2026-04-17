@@ -10,7 +10,7 @@ export default function ChaoticRibbonWave() {
 
   const timeRef = useRef(0);
   const themeRef = useRef(resolvedTheme);
-  const isNeonRef = useRef(true); 
+  const isNeonRef = useRef(false); 
   
   const flowAngleRef = useRef(0);
   const animationFrameIdRef = useRef<number | undefined>(undefined);
