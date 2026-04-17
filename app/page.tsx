@@ -12,8 +12,8 @@ import {
   BookOpen, 
   FileText, 
   X, 
-  Zap,    // New Neon Icon
-  Waves   // New Muted Icon
+  Zap,    
+  Waves   
 } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -26,7 +26,7 @@ const PROJECTS = [
     id: "selex",
     title: "SELEX Simulator",
     summary: "Deep learning system for in-silico SELEX simulation. Designed a cross-attention predictor to model round-wise DNA sequence enrichment.",
-    description: "In this project, we worked on the development of a deep learning system for in-silico SELEX simulation and prediction. Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment, and currently building a generative framework using flow matching and neural ODEs to simulate the full enrichment trajectory.",
+    description: "In this project, we worked on the development of a deep learning system for in-silico SELEX simulation and prediction. Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment, and currently building a generative framework using flow matching and neural ODEs to simulate the full enrichment trajectory. Responsibilities include constructing embedding pipelines, training conditional vector fields, and evaluating models for predictive accuracy and generative performance.",
     tags: ["Deep Learning", "Flow Matching"],
     links: { github: "#", pdf: "#" }
   },
@@ -34,7 +34,7 @@ const PROJECTS = [
     id: "convex",
     title: "Convex Clustering",
     summary: "Explored techniques in Convex clustering literature, adapting ADMM for biclustering to simultaneously cluster samples and genes.",
-    description: "Explored various techniques that are prevalent in the landscape of Convex clustering literature and methodologies commonly used by practitioners to deal with optimization problems, namely ADMM (Alternating Direction Method of Multipliers).",
+    description: "Explored various techniques that are prevalent in the landscape of Convex clustering literature and methodologies commonly used by practitioners to deal with optimization problems, namely ADMM (Alternating Direction Method of Multipliers). Attempted to adapt to situations where clusters w.r.t. both rows and columns are of substance (biclustering), devising appropriate objective functions coupled with optimization subroutines.",
     tags: ["Optimization", "ADMM"],
     links: { github: "#", pdf: "#" }
   },
@@ -42,7 +42,7 @@ const PROJECTS = [
     id: "bregman",
     title: "Bregman Divergences",
     summary: "Analyzed convergence rates of clustering algorithms under various optimization subroutines using different Bregman divergences.",
-    description: "Explored various Bregman divergences such as Kullback-Leibler divergence and studied how they affect the clustering ability of an algorithm. Analyzed convergence rates under subroutines like Gradient Descent and ADAM.",
+    description: "Explored various Bregman divergences such as Kullback-Leibler divergence, Euclidean distance, and studied how they affect the clustering ability of an algorithm to identify hidden structures without human intervention. Analyzed convergence rates under subroutines like Gradient Descent and ADAM to obtain asymptotic bounds.",
     tags: ["Clustering", "Math"],
     links: { github: "#", pdf: "#", publication: "#" }
   },
@@ -50,7 +50,7 @@ const PROJECTS = [
     id: "rl",
     title: "RL & Evolutionary Algos",
     summary: "Implemented minimax, Q-learning, and MCTS on gym environments including tic-tac-toe, blackjack, and Atari games.",
-    description: "Surveyed literature in these disciplines and how they intertwine. Implemented algorithms like minimax, Q-learning, MCTS, and deep learning inspired variants on simple environments like tic-tac-toe and Atari.",
+    description: "Surveyed literature in these disciplines and how they intertwine. Implemented algorithms like minimax, Q-learning, MCTS, and deep learning inspired variants on simple environments like tic-tac-toe, blackjack, ludo, and several Atari environments.",
     tags: ["RL", "Python"],
     links: { github: "#" }
   }
@@ -60,13 +60,10 @@ export default function Portfolio() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
-  
-  // Set to FALSE so it defaults to the readable Muted Pastel aesthetic
   const [isNeon, setIsNeon] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
-  // Lock scroll when project modal is open
   useEffect(() => {
     if (selectedProject) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
@@ -76,14 +73,12 @@ export default function Portfolio() {
   const toggleAesthetic = () => {
     const newState = !isNeon;
     setIsNeon(newState);
-    // Notify the canvas component to change styles
     window.dispatchEvent(new CustomEvent("toggle-aesthetic", { detail: { isNeon: newState } }));
   };
 
   return (
     <div className="min-h-screen text-zinc-600 dark:text-zinc-400 selection:bg-zinc-200 dark:selection:bg-zinc-800 selection:text-zinc-900 dark:selection:text-zinc-200 transition-colors duration-300">
       
-      {/* Background Animated Wave */}
       <ChaoticRibbonWave />
 
       {/* PROJECT MODAL */}
@@ -135,16 +130,21 @@ export default function Portfolio() {
                     <FileText className="w-4 h-4" /> View PDF
                   </a>
                 )}
+                {selectedProject.links.publication && (
+                  <a href={selectedProject.links.publication} className="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-sky-500 dark:hover:text-sky-400 transition-colors">
+                    <BookOpen className="w-4 h-4" /> Publication
+                  </a>
+                )}
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* --- CONTENT WRAPPER --- */}
+      {/* --- MAIN CONTENT WRAPPER --- */}
       <div className="relative mx-auto min-h-screen max-w-screen-xl">
         
-        {/* THE DYNAMIC GLASS PANE: Only activates during Neon mode */}
+        {/* Dynamic Glass Pane */}
         <div 
           className={`absolute inset-0 -z-10 transition-all duration-700 sm:border-x ${
             isNeon 
@@ -156,6 +156,7 @@ export default function Portfolio() {
         <div className="px-6 py-12 md:px-12 md:py-20 lg:px-24 lg:py-0">
           <div className="lg:flex lg:justify-between lg:gap-4">
             
+            {/* HEADER (Sticky Left Side) */}
             <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
               <div>
                 <div className="flex flex-col items-start w-full">
@@ -231,19 +232,89 @@ export default function Portfolio() {
               </div>
             </header>
 
+            {/* MAIN CONTENT (Right Side scrollable) */}
             <main className="pt-24 lg:w-1/2 lg:py-24 flex flex-col gap-24">
-              <section id="projects">
+              
+              {/* EDUCATION */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Education</h3>
+                <div className="group/list space-y-8">
+                  <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">Jul 2025 &mdash; Present</header>
+                    <div className="z-10 sm:col-span-6">
+                      <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">Master of Statistics [M.Stat.]</h4>
+                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Indian Statistical Institute, Kolkata</p>
+                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Aggregate Score - Ongoing</p>
+                    </div>
+                  </div>
+                  <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">Aug 2022 &mdash; May 2025</header>
+                    <div className="z-10 sm:col-span-6">
+                      <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">Bachelor of Statistics [B.Stat.] (Honors)</h4>
+                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Indian Statistical Institute, Kolkata</p>
+                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Aggregate Score - 75%</p>
+                    </div>
+                  </div>
+                  <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">2021</header>
+                    <div className="z-10 sm:col-span-6">
+                      <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">AISSCE (Class XII)</h4>
+                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Hem Sheela Model School, Durgapur</p>
+                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Aggregate Score - 94.2%</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
+
+              {/* EXPERIENCE */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Experience</h3>
+                <div className="group/list space-y-12">
+                  <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">May 2025 &mdash; Jul 2025</header>
+                    <div className="z-10 sm:col-span-6">
+                      <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">Research Intern &middot; TU Darmstadt</h4>
+                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Self Organizing Systems Lab</p>
+                      <ul className="mt-2 text-sm leading-normal list-disc list-inside space-y-1">
+                        <li>Worked on the development of a deep learning system for in-silico SELEX simulation and prediction.</li>
+                        <li>Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment.</li>
+                        <li>Building a generative framework using flow matching and neural ODEs.</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">Jan 2025 &mdash; Mar 2025</header>
+                    <div className="z-10 sm:col-span-6">
+                      <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">Organizing Member &middot; ISI, Kolkata</h4>
+                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Winter School on Deep Learning [WSDL]</p>
+                      <p className="mt-2 text-sm leading-normal">
+                        Contributed to an intensive academic event aimed at providing self-motivated students with in-depth knowledge and exposure to cutting-edge research in Deep Learning.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
+
+              {/* PROJECTS GRID */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                 <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Selected Projects</h3>
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   {PROJECTS.map((project) => (
                     <motion.div 
                       layoutId={`project-card-${project.id}`}
                       key={project.id}
                       onClick={() => setSelectedProject(project)}
-                      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 p-6 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:border-zinc-300 dark:hover:border-zinc-700 cursor-pointer shadow-sm"
+                      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 p-6 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:border-zinc-300 dark:hover:border-zinc-700 cursor-pointer shadow-sm hover:shadow-md"
                     >
-                      <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">{project.title}</h4>
-                      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">{project.summary}</p>
+                      <div>
+                        <h4 className="font-semibold text-zinc-900 dark:text-zinc-100">{project.title}</h4>
+                        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3">{project.summary}</p>
+                      </div>
                       <div className="flex flex-wrap gap-2 mt-4">
                         {project.tags.map(tag => (
                           <span key={tag} className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-2 py-1 text-[10px] font-medium">{tag}</span>
@@ -252,9 +323,90 @@ export default function Portfolio() {
                     </motion.div>
                   ))}
                 </div>
-              </section>
+              </motion.section>
 
-              <footer className="pb-16 text-sm text-zinc-500">
+              {/* PUBLICATIONS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Publications</h3>
+                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100">
+                  <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:hover:bg-zinc-100/50 dark:lg:hover:bg-zinc-800/50 lg:hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:hover:drop-shadow-lg"></div>
+                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">2025</header>
+                  <div className="z-10 sm:col-span-6">
+                    <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">
+                      Hyperbolic Fuzzy C-Means with Adaptive Weight-based Filtering
+                    </h4>
+                    <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Accepted at ICVGIP 2025 (Oral and Poster)</p>
+                    <p className="mt-2 text-sm leading-normal">
+                      Introduced Filtration-based Hyperbolic Fuzzy C-Means (HypeFCM), a novel clustering algorithm tailored for better representation of data relationships in non-Euclidean spaces using the Poincaré Disc model.
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">Das S.</span>
+                      <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50 opacity-70">Pratihar A.</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
+
+              {/* SKILLS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Skills</h3>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Languages</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {['R', 'Python', 'C', 'LaTeX', 'Java', 'Julia'].map((skill) => (
+                        <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Tools & Frameworks</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {['RStudio', 'Git', 'WandB', 'VS Code', 'Jupyter', 'Colab'].map((skill) => (
+                        <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
+
+              {/* COURSEWORK & INTERESTS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Coursework & Interests</h3>
+                <p className="leading-relaxed text-sm mb-4">
+                  <strong className="text-zinc-900 dark:text-zinc-200">Interests:</strong> Biostatistics, Causal Inference and Discovery, Bayesian Techniques, Statistical Learning, Non-Parametric Clustering techniques, Flow Matching, Diffusion Processes, LLMs, Deep Learning, Convex and Non-Convex Optimization Techniques.
+                </p>
+                <p className="leading-relaxed text-sm text-zinc-500 dark:text-zinc-500">
+                  <strong className="text-zinc-700 dark:text-zinc-300">Select Courses:</strong> Causal Inference, Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods, Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Measure Theoretic Probability, Numerical Analysis.
+                </p>
+              </motion.section>
+
+              {/* ACHIEVEMENTS & EXTRAS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Achievements</h3>
+                  <ul className="space-y-3 text-sm">
+                    <li className="flex gap-3 items-start">
+                      <span className="text-sky-500 font-bold mt-0.5">›</span>
+                      <span>Qualified for direct admission to M.Stat. program (ISI).</span>
+                    </li>
+                    <li className="flex gap-3 items-start">
+                      <span className="text-sky-500 font-bold mt-0.5">›</span>
+                      <span>Top 0.1 percentile in JEE Mains (1M+ candidates).</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Languages & Hobbies</h3>
+                  <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    <li><strong className="text-zinc-900 dark:text-zinc-200">English:</strong> Professional</li>
+                    <li><strong className="text-zinc-900 dark:text-zinc-200">Bengali / Hindi:</strong> Native</li>
+                  </ul>
+                  <p className="text-sm text-zinc-500">Music, Table Tennis, Coding</p>
+                </div>
+              </motion.section>
+
+              <footer className="pb-16 text-sm text-zinc-500 border-t border-zinc-200/50 dark:border-zinc-800/50 pt-8 mt-8">
                 <p>Built with Next.js, Tailwind CSS, and Framer Motion.</p>
               </footer>
             </main>
