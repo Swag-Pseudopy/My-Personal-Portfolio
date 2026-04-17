@@ -20,46 +20,110 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import ChaoticRibbonWave from "@/components/fluid-wave";
 
-// Project Data Array
-const PROJECTS = [
+// --- DATA ARRAYS ---
+
+const FEATURED_PROJECTS = [
   {
     id: "selex",
-    title: "SELEX Simulator",
-    summary: "Deep learning system for in-silico SELEX simulation. Designed a cross-attention predictor to model round-wise DNA sequence enrichment.",
-    description: "In this project, we worked on the development of a deep learning system for in-silico SELEX simulation and prediction. Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment, and currently building a generative framework using flow matching and neural ODEs to simulate the full enrichment trajectory. Responsibilities include constructing embedding pipelines, training conditional vector fields, and evaluating models for predictive accuracy and generative performance.",
-    tags: ["Deep Learning", "Flow Matching"],
-    links: { github: "#", pdf: "#" }
+    title: "SELEX Simulator with Generative Models",
+    summary: "Deep learning system for in-silico SELEX simulation integrating bioinformatics and dynamic system learning.",
+    guide: "Prof. Dr. Heinz Koeppl, Philipp Froehlich, Sebastian Wirth",
+    description: "Worked on the development of a deep learning system for in-silico SELEX simulation and prediction. Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment, and currently building a generative framework using flow matching and neural ODEs to simulate the full enrichment trajectory. Responsibilities include constructing embedding pipelines, training conditional vector fields, and evaluating models for predictive accuracy and generative performance.",
+    tags: ["Deep Learning", "Flow Matching", "Neural ODEs"],
+    links: { github: "#" }
   },
   {
     id: "convex",
-    title: "Convex Clustering",
-    summary: "Explored techniques in Convex clustering literature, adapting ADMM for biclustering to simultaneously cluster samples and genes.",
-    description: "Explored various techniques that are prevalent in the landscape of Convex clustering literature and methodologies commonly used by practitioners to deal with optimization problems, namely ADMM (Alternating Direction Method of Multipliers). Attempted to adapt to situations where clusters w.r.t. both rows and columns are of substance (biclustering), devising appropriate objective functions coupled with optimization subroutines.",
-    tags: ["Optimization", "ADMM"],
-    links: { github: "#", pdf: "#" }
+    title: "Convex Clustering Methodologies",
+    summary: "Explored Convex clustering and adapted ADMM for biclustering to simultaneously cluster samples and genes.",
+    guide: "Prof. Swagatam Das, Dr. Saptarshi Chakraborty, Debolina Paul",
+    description: "Explored various techniques prevalent in Convex clustering literature and methodologies commonly used by practitioners for optimization, namely ADMM (Alternating Direction Method of Multipliers). Attempted to adapt to situations where clusters w.r.t. both rows and columns are of substance (biclustering), devising appropriate objective functions coupled with optimization subroutines to reach meaningful clusters.",
+    tags: ["Optimization", "ADMM", "Biclustering"],
+    links: { github: "#" }
+  },
+  {
+    id: "regression",
+    title: "Advanced Regression Methodologies",
+    summary: "Assessed various penalizations in regression to handle sparsity, multicollinearity, and model misspecification.",
+    guide: "Prof. Kiranmoy Das",
+    description: "Explored and assessed various kinds of penalizations prevalent in the literature of regression and how they affect the effectiveness of the model in terms of its ability in tactfully handling certain commonly observable traits in real-life data such as sparsity, multicollinearity, and model misspecification.",
+    tags: ["Regression", "Penalization", "Statistical Modeling"],
+    links: { github: "#" }
   },
   {
     id: "bregman",
-    title: "Bregman Divergences",
-    summary: "Analyzed convergence rates of clustering algorithms under various optimization subroutines using different Bregman divergences.",
-    description: "Explored various Bregman divergences such as Kullback-Leibler divergence, Euclidean distance, and studied how they affect the clustering ability of an algorithm to identify hidden structures without human intervention. Analyzed convergence rates under subroutines like Gradient Descent and ADAM to obtain asymptotic bounds.",
-    tags: ["Clustering", "Math"],
-    links: { github: "#", pdf: "#", publication: "#" }
+    title: "Bregman Divergences & Clustering",
+    summary: "Analyzed convergence rates of clustering algorithms under optimization subroutines using Bregman divergences.",
+    guide: "Prof. Swagatam Das",
+    description: "Explored various Bregman divergences such as Kullback-Leibler divergence and Euclidean distance, studying how they affect clustering ability to identify hidden structures without human intervention. Analyzed convergence rates under subroutines like Gradient Descent and ADAM to obtain asymptotic bounds, and explored convex formulations of such objectives.",
+    tags: ["Clustering", "Math", "Optimization"],
+    links: { github: "#" }
   },
   {
     id: "rl",
-    title: "RL & Evolutionary Algos",
-    summary: "Implemented minimax, Q-learning, and MCTS on gym environments including tic-tac-toe, blackjack, and Atari games.",
-    description: "Surveyed literature in these disciplines and how they intertwine. Implemented algorithms like minimax, Q-learning, MCTS, and deep learning inspired variants on simple environments like tic-tac-toe, blackjack, ludo, and several Atari environments.",
-    tags: ["RL", "Python"],
+    title: "RL & Evolutionary Algorithms",
+    summary: "Implemented minimax, Q-learning, MCTS, and deep learning variants on various gym environments.",
+    guide: "Prof. Swagatam Das & Dr. Abhishek Sinha",
+    description: "Surveyed literature in Reinforcement Learning, Evolutionary algorithms, and Online Optimization. Implemented algorithms like minimax, Q-learning, MCTS, and deep learning-inspired variants on environments like tic-tac-toe, blackjack, ludo, and several Atari games.",
+    tags: ["RL", "Python", "MCTS"],
+    links: { github: "#" }
+  },
+  {
+    id: "spectral",
+    title: "Spectral & Kernel Clustering",
+    summary: "Developed DPMM-like approaches for optimal loss and hyperparameter insensitivity in Spectral and Kernel K-means.",
+    guide: "Prof. Swagatam Das",
+    description: "Studied algorithms like K-means, Power K-means, Kernel K-means, and Gaussian Mixture Models. Developed approaches that determine the required number of clusters using Dirichlet Process Mixture Model (DPMM)-like structures for optimal loss, detecting broader varieties of clusters beyond convex shapes, while remaining less sensitive to hyperparameters.",
+    tags: ["Kernel Methods", "DPMM", "Clustering"],
     links: { github: "#" }
   }
 ];
 
+const OTHER_PROJECTS = [
+  {
+    title: "Estimation of Intensity Parameter",
+    date: "Apr 2024",
+    guide: "Prof. Probal Chaudhuri",
+    description: "Comparative study of PLUG-IN and LEAVE-ONE-OUT methods for estimating the intensity parameter, determining optimal moving window sizes for minimizing MSE."
+  },
+  {
+    title: "Spectral Clustering Theory & Practice",
+    date: "May 2023 — Sep 2023",
+    guide: "Prof. Malay Bhattacharyya",
+    description: "Reproduced traditional Spectral Clustering (Ng, Jordan, Weiss 2001) and explored eigen selection variants in spectral clustering."
+  },
+  {
+    title: "Body Performance Analysis",
+    date: "May 2023",
+    guide: "Prof. Kiranmoy Das",
+    description: "Exploratory data analysis using multiple linear regression and univariate quantile regression for prediction of missing values on Korean sports data."
+  },
+  {
+    title: "Quantile Regression Applications",
+    date: "Feb 2023",
+    guide: "Prof. Kiranmoy Das",
+    description: "Centered around the study and comparison of exposure groups on the distribution of outcomes using Quantile Regression methodologies."
+  },
+  {
+    title: "Nitrogen Use Efficiency Analysis",
+    date: "Dec 2022",
+    guide: "Prof. Kiranmoy Das",
+    description: "Bivariate exploratory analysis of Nitrogen Use Efficiency and Fertilizer Use in India vs. Cuba (1991-2014) to assess sustainable agriculture practices."
+  },
+  {
+    title: "Russia GDP & Life Expectancy",
+    date: "Nov 2022",
+    guide: "Prof. Kiranmoy Das",
+    description: "Exploratory data analysis tracking the variation of life expectancy and GDP per capita (PPP) in Russia over 7 decades (1951-2022)."
+  }
+];
+
+// --- COMPONENT ---
+
 export default function Portfolio() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<typeof PROJECTS[0] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<typeof FEATURED_PROJECTS[0] | null>(null);
   const [isNeon, setIsNeon] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -81,7 +145,7 @@ export default function Portfolio() {
       
       <ChaoticRibbonWave />
 
-      {/* PROJECT MODAL */}
+      {/* FEATURED PROJECT MODAL */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
@@ -107,7 +171,8 @@ export default function Portfolio() {
                 <X className="w-5 h-5" />
               </button>
               
-              <h3 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 pr-12 mb-4">{selectedProject.title}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-zinc-100 pr-12 mb-2">{selectedProject.title}</h3>
+              <p className="text-sm font-medium text-sky-600 dark:text-sky-400 mb-4">Guide: {selectedProject.guide}</p>
               
               <div className="flex flex-wrap gap-2 mb-6">
                 {selectedProject.tags.map(tag => (
@@ -123,16 +188,6 @@ export default function Portfolio() {
                 {selectedProject.links.github && (
                   <a href={selectedProject.links.github} className="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-sky-500 dark:hover:text-sky-400 transition-colors">
                     <Github className="w-4 h-4" /> View Repository
-                  </a>
-                )}
-                {selectedProject.links.pdf && (
-                  <a href={selectedProject.links.pdf} className="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-sky-500 dark:hover:text-sky-400 transition-colors">
-                    <FileText className="w-4 h-4" /> View PDF
-                  </a>
-                )}
-                {selectedProject.links.publication && (
-                  <a href={selectedProject.links.publication} className="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-sky-500 dark:hover:text-sky-400 transition-colors">
-                    <BookOpen className="w-4 h-4" /> Publication
                   </a>
                 )}
               </div>
@@ -266,6 +321,15 @@ export default function Portfolio() {
                       <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Aggregate Score - 94.2%</p>
                     </div>
                   </div>
+                  <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">2019</header>
+                    <div className="z-10 sm:col-span-6">
+                      <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">AISSE (Class X)</h4>
+                      <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Hem Sheela Model School, Durgapur</p>
+                      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Aggregate Score - 95%</p>
+                    </div>
+                  </div>
                 </div>
               </motion.section>
 
@@ -297,14 +361,24 @@ export default function Portfolio() {
                       </p>
                     </div>
                   </div>
+                  <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">Aug 2022 &mdash; May 2025</header>
+                    <div className="z-10 sm:col-span-6">
+                      <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">Member &middot; ISI Maths Club</h4>
+                      <p className="mt-2 text-sm leading-normal">
+                        A small organization focusing on promoting interest and understanding in mathematics beyond the formal classroom setting.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </motion.section>
 
               {/* PROJECTS GRID */}
               <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Selected Projects</h3>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Featured Projects</h3>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  {PROJECTS.map((project) => (
+                  {FEATURED_PROJECTS.map((project) => (
                     <motion.div 
                       layoutId={`project-card-${project.id}`}
                       key={project.id}
@@ -317,10 +391,30 @@ export default function Portfolio() {
                       </div>
                       <div className="flex flex-wrap gap-2 mt-4">
                         {project.tags.map(tag => (
-                          <span key={tag} className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-2 py-1 text-[10px] font-medium">{tag}</span>
+                          <span key={tag} className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-2 py-1 text-[10px] font-medium text-zinc-700 dark:text-zinc-300">{tag}</span>
                         ))}
                       </div>
                     </motion.div>
+                  ))}
+                </div>
+              </motion.section>
+
+              {/* ACADEMIC & READING PROJECTS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Academic & Exploratory Projects</h3>
+                <div className="group/list space-y-10">
+                  {OTHER_PROJECTS.map((project, idx) => (
+                    <div key={idx} className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
+                      <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                      <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">{project.date}</header>
+                      <div className="z-10 sm:col-span-6">
+                        <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">{project.title}</h4>
+                        <p className="mt-1 text-sm text-sky-600 dark:text-sky-500 font-medium">Guide: {project.guide}</p>
+                        <p className="mt-2 text-sm leading-normal text-zinc-600 dark:text-zinc-400">
+                          {project.description}
+                        </p>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </motion.section>
@@ -362,7 +456,7 @@ export default function Portfolio() {
                   <div>
                     <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Tools & Frameworks</h4>
                     <div className="flex flex-wrap gap-2">
-                      {['RStudio', 'Git', 'WandB', 'VS Code', 'Jupyter', 'Colab'].map((skill) => (
+                      {['RStudio', 'Git', 'WandB', 'VS Code', 'Jupyter', 'Colab', 'Copilot', 'ChatGPT', 'Geogebra'].map((skill) => (
                         <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
                       ))}
                     </div>
