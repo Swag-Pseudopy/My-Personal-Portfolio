@@ -347,7 +347,7 @@ export default function Portfolio() {
 
                 <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mt-8 flex items-center gap-5">
                   <li><a href="https://github.com/Swag-Pseudopy" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Github className="h-6 w-6" /></a></li>
-                  <li><a href="https://scholar.google.com/" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors" title="Google Scholar"><GraduationCap className="h-6 w-6" /></a></li>
+                  <li><a href="https://scholar.google.com/citations?user=Fr2FQ4IAAAAJ&hl=en" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors" title="Google Scholar"><GraduationCap className="h-6 w-6" /></a></li>
                   <li><a href="https://linkedin.com/in/swagato-das" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Linkedin className="h-6 w-6" /></a></li>
                   <li><a href="mailto:swagato.isi2227@gmail.com" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Mail className="h-6 w-6" /></a></li>
                   {/* <li><a href="tel:+91XXXXXXXXXX" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Phone className="h-6 w-6" /></a></li> */}
@@ -464,7 +464,7 @@ export default function Portfolio() {
                   <div>
                     <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Tools & Frameworks</h4>
                     <div className="flex flex-wrap gap-2">
-                      {['RStudio', 'Git', 'WandB', 'VS Code', 'Jupyter', 'Colab', 'Copilot', 'ChatGPT', 'Geogebra'].map((skill) => (
+                      {['Linux/Bash', 'RStudio', 'Git', 'WandB', 'VS Code', 'Jupyter', 'Colab', 'Copilot', 'ChatGPT', 'Geogebra'].map((skill) => (
                         <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
                       ))}
                     </div>
