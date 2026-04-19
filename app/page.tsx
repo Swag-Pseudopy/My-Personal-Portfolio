@@ -5,15 +5,15 @@ import {
   Github, 
   Linkedin, 
   Mail, 
-  Download, 
+  FileText, // Swapped in for the CV viewing icon
   Moon, 
   Sun, 
   ExternalLink, 
   BookOpen, 
-  FileText, 
   X, 
   Zap,    
-  Waves   
+  Waves,
+  GraduationCap // Added for Google Scholar
 } from "lucide-react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -21,6 +21,19 @@ import { useEffect, useState } from "react";
 import ChaoticRibbonWave from "@/components/fluid-wave";
 
 // --- DATA ARRAYS ---
+
+const PUBLICATIONS = [
+  {
+    id: "hypefcm",
+    year: "2025",
+    title: "Hyperbolic Fuzzy C-Means with Adaptive Weight-based Filtering for Efficient Clustering",
+    status: "Accepted at ICVGIP 2025 (Oral and Poster)",
+    authors: ["Das S.", "Pratihar A.", "Das S."],
+    summary: "Introduced Filtration-based Hyperbolic Fuzzy C-Means (HypeFCM), a novel clustering algorithm tailored for better representation of data relationships in non-Euclidean spaces using the Poincaré Disc model.",
+    abstract: "Clustering algorithms play a pivotal role in unsupervised learning by identifying and grouping similar objects based on shared characteristics. Although traditional clustering techniques, such as hard and fuzzy center-based clustering, have been widely used, they struggle with complex, high-dimensional, and non-Euclidean datasets. In particular, the fuzzy C-Means (FCM) algorithm, despite its efficiency and popularity, exhibits notable limitations in non-Euclidean spaces. Euclidean spaces assume linear separability and uniform distance scaling, limiting their effectiveness in capturing complex, hierarchical, or non-Euclidean structures in fuzzy clustering. To overcome these challenges, we introduce Filtration-based Hyperbolic Fuzzy C-Means (HypeFCM), a novel clustering algorithm tailored for better representation of data relationships in non-Euclidean spaces. HypeFCM integrates the principles of fuzzy clustering with hyperbolic geometry and employs a weight-based filtering mechanism to improve performance. The algorithm initializes weights using a Dirichlet distribution and iteratively refines cluster centroids and membership assignments based on a hyperbolic metric in the Poincaré Disc model. Extensive experimental evaluations on 6 synthetic and 12 real-world datasets demonstrate that HypeFCM significantly outperforms conventional fuzzy clustering methods in non-Euclidean settings, underscoring its robustness and effectiveness.",
+    links: { arxiv: "https://arxiv.org/pdf/2505.04335" }
+  }
+];
 
 const FEATURED_PROJECTS = [
   {
@@ -123,16 +136,21 @@ const OTHER_PROJECTS = [
 export default function Portfolio() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  
+  // Track open modals
   const [selectedProject, setSelectedProject] = useState<typeof FEATURED_PROJECTS[0] | null>(null);
+  const [selectedPublication, setSelectedPublication] = useState<typeof PUBLICATIONS[0] | null>(null);
+  
   const [isNeon, setIsNeon] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
+  // Lock scroll when ANY modal is open
   useEffect(() => {
-    if (selectedProject) document.body.style.overflow = 'hidden';
+    if (selectedProject || selectedPublication) document.body.style.overflow = 'hidden';
     else document.body.style.overflow = 'unset';
     return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedProject]);
+  }, [selectedProject, selectedPublication]);
 
   const toggleAesthetic = () => {
     const newState = !isNeon;
@@ -186,8 +204,62 @@ export default function Portfolio() {
 
               <div className="flex flex-wrap gap-4 mt-auto border-t border-zinc-200 dark:border-zinc-800 pt-6">
                 {selectedProject.links.github && (
-                  <a href={selectedProject.links.github} className="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-sky-500 dark:hover:text-sky-400 transition-colors">
+                  <a href={selectedProject.links.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-sky-500 dark:hover:text-sky-400 transition-colors">
                     <Github className="w-4 h-4" /> View Repository
+                  </a>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* PUBLICATION MODAL */}
+      <AnimatePresence>
+        {selectedPublication && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedPublication(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:left-1/2 lg:w-1/2 lg:p-12 cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md" 
+                 style={{ maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)' }} 
+            />
+
+            <motion.div
+              layoutId={`pub-card-${selectedPublication.id}`}
+              onClick={(e) => e.stopPropagation()} 
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden no-scrollbar rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/90 p-8 shadow-2xl ring-1 ring-zinc-200 dark:ring-zinc-800 cursor-default"
+            >
+              <button 
+                onClick={() => setSelectedPublication(null)}
+                className="absolute top-6 right-6 p-2 rounded-full bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors text-zinc-700 dark:text-zinc-300"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-zinc-100 pr-12 mb-2">{selectedPublication.title}</h3>
+              <p className="text-sm font-medium text-sky-600 dark:text-sky-400 mb-4">{selectedPublication.status}</p>
+              
+              <div className="flex flex-wrap gap-2 mb-6">
+                {selectedPublication.authors.map((author, idx) => (
+                  <span key={idx} className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">{author}</span>
+                ))}
+              </div>
+
+              <div className="mb-8">
+                <h4 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100 mb-3">Abstract</h4>
+                <p className="text-sm sm:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 text-justify">
+                  {selectedPublication.abstract}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-4 mt-auto border-t border-zinc-200 dark:border-zinc-800 pt-6">
+                {selectedPublication.links.arxiv && (
+                  <a href={selectedPublication.links.arxiv} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:text-sky-500 dark:hover:text-sky-400 transition-colors">
+                    <ExternalLink className="w-4 h-4" /> Read on arXiv
                   </a>
                 )}
               </div>
@@ -274,14 +346,17 @@ export default function Portfolio() {
                 </div>
 
                 <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mt-8 flex items-center gap-5">
-                  <li><a href="https://github.com/Swag-Pseudopy" target="_blank" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Github className="h-6 w-6" /></a></li>
-                  <li><a href="https://linkedin.com/in/swagato-das" target="_blank" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Linkedin className="h-6 w-6" /></a></li>
-                  <li><a href="mailto:swagato.isi2227@gmail.com" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Mail className="h-6 w-6" /></a></li>
+                  <li><a href="https://github.com/Swag-Pseudopy" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Github className="h-6 w-6" /></a></li>
+                  <li><a href="https://scholar.google.com/" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors" title="Google Scholar"><GraduationCap className="h-6 w-6" /></a></li>
+                  <li><a href="https://linkedin.com/in/swagato-das" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Linkedin className="h-6 w-6" /></a></li>
+                  <li><a href="mailto:swagato.isi2227@gmail.com" target="_blank" rel="noreferrer" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Mail className="h-6 w-6" /></a></li>
+                  {/* <li><a href="tel:+91XXXXXXXXXX" className="block text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"><Phone className="h-6 w-6" /></a></li> */}
                 </motion.ul>
                 
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="mt-8">
-                  <a href="/Swagato_Das_Cv.pdf" download className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-900 bg-zinc-100 border-zinc-200 hover:bg-zinc-200 dark:text-zinc-100 dark:bg-zinc-800/50 border dark:border-zinc-700/50 rounded-full dark:hover:bg-zinc-700/50 transition-colors">
-                    <Download className="h-4 w-4" /> Download CV
+                  {/* Changed 'download' attribute to target="_blank" so it opens in the browser */}
+                  <a href="/Swagato_Das_Cv.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-900 bg-zinc-100 border-zinc-200 hover:bg-zinc-200 dark:text-zinc-100 dark:bg-zinc-800/50 border dark:border-zinc-700/50 rounded-full dark:hover:bg-zinc-700/50 transition-colors">
+                    <FileText className="h-4 w-4" /> View CV
                   </a>
                 </motion.div>
               </div>
@@ -374,6 +449,73 @@ export default function Portfolio() {
                 </div>
               </motion.section>
 
+              {/* SKILLS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Skills</h3>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Languages</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {['R', 'Python', 'C', 'LaTeX', 'Java', 'Julia'].map((skill) => (
+                        <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Tools & Frameworks</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {['RStudio', 'Git', 'WandB', 'VS Code', 'Jupyter', 'Colab', 'Copilot', 'ChatGPT', 'Geogebra'].map((skill) => (
+                        <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
+
+              {/* COURSEWORK & INTERESTS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Coursework & Interests</h3>
+                <p className="leading-relaxed text-sm mb-4">
+                  <strong className="text-zinc-900 dark:text-zinc-200">Interests:</strong> Biostatistics, Causal Inference and Discovery, Bayesian Techniques, Statistical Learning, Non-Parametric Clustering techniques, Flow Matching, Diffusion Processes, LLMs, Deep Learning, Convex and Non-Convex Optimization Techniques.
+                </p>
+                <p className="leading-relaxed text-sm text-zinc-500 dark:text-zinc-500">
+                  <strong className="text-zinc-700 dark:text-zinc-300">Select Courses:</strong> Causal Inference, Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods, Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Measure Theoretic Probability, Numerical Analysis.
+                </p>
+              </motion.section>
+
+              {/* PUBLICATIONS */}
+              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Publications</h3>
+                <div className="group/list space-y-10">
+                  {PUBLICATIONS.map((pub) => (
+                    <div 
+                      key={pub.id}
+                      onClick={() => setSelectedPublication(pub)}
+                      className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50 cursor-pointer"
+                    >
+                      <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-zinc-100/50 dark:lg:group-hover:bg-zinc-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                      <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">{pub.year}</header>
+                      <div className="z-10 sm:col-span-6">
+                        <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">
+                          {pub.title}
+                        </h4>
+                        <p className="mt-1 text-sm text-sky-600 dark:text-sky-500 font-medium">{pub.status}</p>
+                        <p className="mt-2 text-sm leading-normal text-zinc-600 dark:text-zinc-400">
+                          {pub.summary}
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {pub.authors.map((author, idx) => (
+                            <span key={idx} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">
+                              {author}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.section>
+
               {/* PROJECTS GRID */}
               <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                 <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Featured Projects</h3>
@@ -417,62 +559,6 @@ export default function Portfolio() {
                     </div>
                   ))}
                 </div>
-              </motion.section>
-
-              {/* PUBLICATIONS */}
-              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Publications</h3>
-                <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100">
-                  <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:hover:bg-zinc-100/50 dark:lg:hover:bg-zinc-800/50 lg:hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:hover:drop-shadow-lg"></div>
-                  <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-zinc-500 sm:col-span-2 font-mono">2025</header>
-                  <div className="z-10 sm:col-span-6">
-                    <h4 className="font-medium leading-snug text-zinc-900 dark:text-zinc-200">
-                      Hyperbolic Fuzzy C-Means with Adaptive Weight-based Filtering
-                    </h4>
-                    <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-500">Accepted at ICVGIP 2025 (Oral and Poster)</p>
-                    <p className="mt-2 text-sm leading-normal">
-                      Introduced Filtration-based Hyperbolic Fuzzy C-Means (HypeFCM), a novel clustering algorithm tailored for better representation of data relationships in non-Euclidean spaces using the Poincaré Disc model.
-                    </p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">Das S.</span>
-                      <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50 opacity-70">Pratihar A.</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.section>
-
-              {/* SKILLS */}
-              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Skills</h3>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Languages</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {['R', 'Python', 'C', 'LaTeX', 'Java', 'Julia'].map((skill) => (
-                        <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-200 mb-2">Tools & Frameworks</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {['RStudio', 'Git', 'WandB', 'VS Code', 'Jupyter', 'Colab', 'Copilot', 'ChatGPT', 'Geogebra'].map((skill) => (
-                        <span key={skill} className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{skill}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.section>
-
-              {/* COURSEWORK & INTERESTS */}
-              <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Coursework & Interests</h3>
-                <p className="leading-relaxed text-sm mb-4">
-                  <strong className="text-zinc-900 dark:text-zinc-200">Interests:</strong> Biostatistics, Causal Inference and Discovery, Bayesian Techniques, Statistical Learning, Non-Parametric Clustering techniques, Flow Matching, Diffusion Processes, LLMs, Deep Learning, Convex and Non-Convex Optimization Techniques.
-                </p>
-                <p className="leading-relaxed text-sm text-zinc-500 dark:text-zinc-500">
-                  <strong className="text-zinc-700 dark:text-zinc-300">Select Courses:</strong> Causal Inference, Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods, Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Measure Theoretic Probability, Numerical Analysis.
-                </p>
               </motion.section>
 
               {/* ACHIEVEMENTS & EXTRAS */}
