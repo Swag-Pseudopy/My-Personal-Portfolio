@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       {/* Changed duration-300 to duration-700 for a smooth, cinematic fade */}
-      <body className="bg-white dark:bg-black text-zinc-600 dark:text-zinc-300 font-sans antialiased selection:bg-zinc-200 dark:selection:bg-zinc-800 selection:text-black dark:selection:text-white transition-colors duration-700">
+      <body className="bg-white dark:bg-black text-zinc-600 dark:text-zinc-300 font-sans antialiased selection:bg-zinc-200 dark:selection:bg-zinc-800 selection:text-black dark:selection:text-white">
         
         {/* We disable system here because our custom TimeBasedThemer now handles the logic */}
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
