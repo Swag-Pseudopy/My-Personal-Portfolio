@@ -13,40 +13,31 @@
   }
 }
 
-/* --- CINEMATIC THEME TRANSITIONS --- */
+/* --- CINEMATIC THEME TRANSITIONS (SOFT FLOW) --- */
 ::view-transition-group(root) {
-  animation-duration: 0.8s;
+  /* 1.5 seconds creates a very slow, elegant dissolve */
+  animation-duration: 1.5s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
-::view-transition-new(root),
+
 ::view-transition-old(root) {
-  animation: none;
+  animation-name: fade-out;
   mix-blend-mode: normal;
-}
-
-/* 1. LIGHT EXPANDS FROM MIDDLE */
-.transition-to-light::view-transition-new(root) {
-  animation: reveal-center 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  z-index: 2;
-}
-.transition-to-light::view-transition-old(root) {
   z-index: 1;
 }
 
-/* 2. DARKNESS ENGULFS FROM EDGES */
-.transition-to-dark::view-transition-old(root) {
-  animation: conceal-center 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+::view-transition-new(root) {
+  animation-name: fade-in;
+  mix-blend-mode: normal;
   z-index: 2;
 }
-.transition-to-dark::view-transition-new(root) {
-  z-index: 1;
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
-@keyframes reveal-center {
-  from { clip-path: circle(0% at 50% 50%); }
-  to { clip-path: circle(150% at 50% 50%); }
-}
-
-@keyframes conceal-center {
-  from { clip-path: circle(150% at 50% 50%); }
-  to { clip-path: circle(0% at 50% 50%); }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
