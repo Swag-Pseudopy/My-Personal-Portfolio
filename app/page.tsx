@@ -330,14 +330,6 @@ export default function Portfolio() {
                 </div>
               </section>
 
-              {/* 2. RELEVANT COURSEWORK */}
-              <section>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Relevant Coursework</h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
-                  Causal Inference (Ongoing), Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods (Ongoing), Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Regression Techniques, Categorical Data Analysis, Sample Surveys, Molecular Biology (Elective), Introduction to Stochastic Processes, Applied Stochastic Processes, Introduction to Programming and Data Structures, Real Analysis (I-III), Probability Theory (I-III), Measure Theoretic Probability (Ongoing), Vector and Matrices (I-II), Numerical Analysis, Elements of Algebraic Structures, Discrete Mathematics, Differential Equation, Design and Analysis of Algorithms, Statistical Quality Control and Operations Research, Statistics Comprehensive, Metric Topology and Complex Analysis (Elective) (Ongoing), Optimization Techniques (Elective) (Ongoing), Algebra (Audit) (Ongoing).
-                </p>
-              </section>
-
               {/* 3. EXPERIENCE */}
               <section>
                 <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Experience</h3>
@@ -404,6 +396,14 @@ export default function Portfolio() {
                 <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Interests</h3>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
                   Biostatistics, Causal Inference and Discovery, Bayesian Techniques, Statistical Learning, Non-Parametric Clustering techniques, Flow Matching, Diffusion Processes, LLMs, Deep Learning, Convex and Non-Convex Optimization Techniques, Convex Clustering, Evolutionary Algorithms, Reinforcement Learning, Information Theory, Graph Learning.
+                </p>
+              </section>
+
+              {/* 2. RELEVANT COURSEWORK */}
+              <section>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Relevant Coursework</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
+                  Causal Inference (Ongoing), Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods (Ongoing), Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Regression Techniques, Categorical Data Analysis, Sample Surveys, Molecular Biology (Elective), Introduction to Stochastic Processes, Applied Stochastic Processes, Introduction to Programming and Data Structures, Real Analysis (I-III), Probability Theory (I-III), Measure Theoretic Probability (Ongoing), Vector and Matrices (I-II), Numerical Analysis, Elements of Algebraic Structures, Discrete Mathematics, Differential Equation, Design and Analysis of Algorithms, Statistical Quality Control and Operations Research, Statistics Comprehensive, Metric Topology and Complex Analysis (Elective) (Ongoing), Optimization Techniques (Elective) (Ongoing), Algebra (Audit) (Ongoing).
                 </p>
               </section>
 
