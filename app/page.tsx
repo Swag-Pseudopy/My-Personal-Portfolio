@@ -158,6 +158,30 @@ export default function Portfolio() {
     window.dispatchEvent(new CustomEvent("toggle-aesthetic", { detail: { isNeon: newState } }));
   };
 
+  const handleThemeToggle = () => {
+    const isDark = resolvedTheme === 'dark';
+    const nextTheme = isDark ? 'light' : 'dark';
+
+    // Fallback for older browsers that don't support View Transitions
+    if (!document.startViewTransition) {
+      setTheme(nextTheme);
+      return;
+    }
+
+    // Tell CSS which animation to play
+    document.documentElement.classList.add(isDark ? 'transition-to-light' : 'transition-to-dark');
+
+    // Trigger the native screenshot wipe
+    const transition = document.startViewTransition(() => {
+      setTheme(nextTheme);
+    });
+
+    // Clean up classes after animation finishes
+    transition.finished.then(() => {
+      document.documentElement.classList.remove('transition-to-light', 'transition-to-dark');
+    });
+  };
+
   return (
     <div className="min-h-screen text-zinc-600 dark:text-zinc-400 selection:bg-zinc-200 dark:selection:bg-zinc-800 selection:text-zinc-900 dark:selection:text-zinc-200 transition-colors duration-300">
       
@@ -322,7 +346,7 @@ export default function Portfolio() {
                                 : "0 0 10px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 69, 0, 0.2)")
                               : "none"
                           }}
-                          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                          onClick={handleThemeToggle}
                           className="p-3 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all shadow-md hover:shadow-lg"
                           aria-label="Toggle theme"
                         >
