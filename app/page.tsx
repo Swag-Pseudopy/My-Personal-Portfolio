@@ -9,7 +9,6 @@ import {
   Moon, 
   Sun, 
   ExternalLink, 
-  BookOpen, 
   X, 
   Zap,    
   Waves,
@@ -21,6 +20,50 @@ import { useEffect, useState } from "react";
 import ChaoticRibbonWave from "@/components/fluid-wave";
 
 // --- FULL UNTRIMMED DATA ARRAYS ---
+
+const EXPERIENCE = [
+  {
+    id: "tu-darmstadt",
+    date: "May 2025 — Jul 2025",
+    title: "Research Intern",
+    location: "TU Darmstadt, Germany",
+    group: "Self Organizing Systems Lab",
+    summary: "Worked on the development of deep learning systems and generative frameworks for in-silico SELEX simulation.",
+    details: [
+      "Worked on the development of a deep learning system for in-silico SELEX simulation and prediction.",
+      "Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment.",
+      "Building a generative framework using flow matching and neural ODEs to simulate the full enrichment trajectory.",
+      "Responsible for constructing embedding pipelines and training conditional vector fields. Evaluating models for predictive accuracy and generative performance.",
+      "Work integrates bioinformatics, generative modeling, and dynamic system learning."
+    ]
+  },
+  {
+    id: "wsdl",
+    date: "Jan 2025 — Mar 2025",
+    title: "Organizing Member",
+    location: "ISI, Kolkata",
+    group: "Winter School on Deep Learning [WSDL]",
+    summary: "Contributed to an intensive academic event aimed at exposing students to cutting-edge research in Deep Learning.",
+    details: [
+      "Contributed to an intensive academic event aimed at providing self-motivated students with in-depth knowledge and exposure to cutting-edge research in Deep Learning.",
+      "Organized by the Electronics and Communication Sciences Unit at the Indian Statistical Institute, Kolkata.",
+      "The school featured hands-on courses focused on applying state-of-the-art deep learning techniques to real-world problems.",
+      "Covered essential theoretical foundations, including core mathematical concepts and programming skills, fostering a comprehensive understanding of the field."
+    ]
+  },
+  {
+    id: "maths-club",
+    date: "Aug 2022 — May 2025",
+    title: "Member",
+    location: "ISI, Kolkata",
+    group: "ISI Maths Club",
+    summary: "Promoted interest and understanding in mathematics beyond the formal classroom setting.",
+    details: [
+      "A small organization focusing on promoting interest and understanding in mathematics beyond the formal classroom setting.",
+      "Run and managed by mathematics enthusiasts at Indian Statistical Institute, Kolkata."
+    ]
+  }
+];
 
 const PUBLICATIONS = [
   {
@@ -138,18 +181,25 @@ export default function Portfolio() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   
+  // Modal states
   const [selectedProject, setSelectedProject] = useState<typeof ALL_PROJECTS[0] | null>(null);
   const [selectedPublication, setSelectedPublication] = useState<typeof PUBLICATIONS[0] | null>(null);
+  const [selectedExperience, setSelectedExperience] = useState<typeof EXPERIENCE[0] | null>(null);
+  const [isCourseworkOpen, setIsCourseworkOpen] = useState(false);
   
   const [isNeon, setIsNeon] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
+  // Global scroll lock for all modals
   useEffect(() => {
-    if (selectedProject || selectedPublication) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = 'unset';
+    if (selectedProject || selectedPublication || selectedExperience || isCourseworkOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
     return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedProject, selectedPublication]);
+  }, [selectedProject, selectedPublication, selectedExperience, isCourseworkOpen]);
 
   const toggleAesthetic = () => {
     const newState = !isNeon;
@@ -171,7 +221,9 @@ export default function Portfolio() {
       
       <ChaoticRibbonWave />
 
-      {/* PROJECT MODAL */}
+      {/* --- MODALS --- */}
+      
+      {/* 1. PROJECT MODAL */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
@@ -203,7 +255,7 @@ export default function Portfolio() {
         )}
       </AnimatePresence>
 
-      {/* PUBLICATION MODAL */}
+      {/* 2. PUBLICATION MODAL */}
       <AnimatePresence>
         {selectedPublication && (
           <motion.div
@@ -245,6 +297,72 @@ export default function Portfolio() {
         )}
       </AnimatePresence>
 
+      {/* 3. EXPERIENCE MODAL */}
+      <AnimatePresence>
+        {selectedExperience && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedExperience(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:left-1/2 lg:w-1/2 lg:p-12 cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md" style={{ maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)' }} />
+            <motion.div
+              layoutId={`exp-card-${selectedExperience.id}`}
+              onClick={(e) => e.stopPropagation()} 
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden no-scrollbar rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/90 p-8 shadow-2xl ring-1 ring-zinc-200 dark:ring-zinc-800 cursor-default"
+            >
+              <button onClick={() => setSelectedExperience(null)} className="absolute top-6 right-6 p-2 rounded-full bg-zinc-200 dark:bg-zinc-800 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+              <h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 pr-8 mb-2">{selectedExperience.title}</h3>
+              <p className="text-sm font-medium text-sky-600 dark:text-sky-500 mb-1">{selectedExperience.group} · {selectedExperience.location}</p>
+              <p className="text-sm font-mono text-zinc-500 dark:text-zinc-400 mb-6">{selectedExperience.date}</p>
+              
+              <div className="border-t border-zinc-200 dark:border-zinc-800 pt-6">
+                <h4 className="text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100 mb-4">Responsibilities & Details</h4>
+                <ul className="space-y-3 text-sm sm:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 list-disc list-inside">
+                  {selectedExperience.details.map((detail, idx) => (
+                    <li key={idx} className="text-justify">{detail}</li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 4. COURSEWORK MODAL */}
+      <AnimatePresence>
+        {isCourseworkOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsCourseworkOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:left-1/2 lg:w-1/2 lg:p-12 cursor-pointer"
+          >
+            <div className="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-md" style={{ maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)', WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 100%)' }} />
+            <motion.div
+              layoutId="coursework-card"
+              onClick={(e) => e.stopPropagation()} 
+              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden no-scrollbar rounded-[2rem] bg-zinc-50 dark:bg-zinc-900/90 p-8 shadow-2xl ring-1 ring-zinc-200 dark:ring-zinc-800 cursor-default"
+            >
+              <button onClick={() => setIsCourseworkOpen(false)} className="absolute top-6 right-6 p-2 rounded-full bg-zinc-200 dark:bg-zinc-800 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+              <h3 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 pr-8 mb-6">List of all courseworks</h3>
+              <p className="text-sm sm:text-base leading-relaxed text-zinc-600 dark:text-zinc-400 text-justify">
+                Causal Inference (Ongoing), Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods (Ongoing), Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Regression Techniques, Categorical Data Analysis, Sample Surveys, Molecular Biology (Elective), Introduction to Stochastic Processes, Applied Stochastic Processes, Introduction to Programming and Data Structures, Real Analysis (I-III), Probability Theory (I-III), Measure Theoretic Probability (Ongoing), Vector and Matrices (I-II), Numerical Analysis, Elements of Algebraic Structures, Discrete Mathematics, Differential Equation, Design and Analysis of Algorithms, Statistical Quality Control and Operations Research, Statistics Comprehensive, Metric Topology and Complex Analysis (Elective) (Ongoing), Optimization Techniques (Elective) (Ongoing), Algebra (Audit) (Ongoing).
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
+      {/* --- MAIN PAGE CONTENT --- */}
       <div className="relative mx-auto min-h-screen max-w-screen-xl">
         <div className={`absolute inset-0 -z-10 transition-all duration-1000 sm:border-x ${isNeon ? "bg-white/70 dark:bg-black/70 backdrop-blur-[12px] border-zinc-200/50 dark:border-zinc-800/50" : "bg-transparent backdrop-blur-none border-zinc-200/10 dark:border-zinc-800/10"}`}></div>
 
@@ -330,68 +448,7 @@ export default function Portfolio() {
                 </div>
               </section>
 
-              {/* 3. EXPERIENCE */}
-              <section>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Experience</h3>
-                <div className="group/list space-y-12">
-                  <div className="group relative grid pb-1 sm:grid-cols-8 sm:gap-8">
-                    <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono">May 2025 — Jul 2025</header>
-                    <div className="z-10 sm:col-span-6">
-                      <h4 className="font-medium text-zinc-900 dark:text-zinc-200">Research Intern · TU Darmstadt, Germany</h4>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-500 mt-1">Self Organizing Systems Lab</p>
-                      <ul className="mt-2 text-sm leading-normal list-disc list-inside space-y-1">
-                        <li>Worked on the development of a deep learning system for in-silico SELEX simulation and prediction.</li>
-                        <li>Designed and implemented a cross-attention predictor to model round-wise DNA sequence enrichment.</li>
-                        <li>Building a generative framework using flow matching and neural ODEs to simulate the full enrichment trajectory.</li>
-                        <li>Responsible for constructing embedding pipelines and training conditional vector fields. Evaluating models for predictive accuracy and generative performance.</li>
-                        <li>Work integrates bioinformatics, generative modeling, and dynamic system learning.</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="group relative grid pb-1 sm:grid-cols-8 sm:gap-8">
-                    <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono">Jan 2025 — Mar 2025</header>
-                    <div className="z-10 sm:col-span-6">
-                      <h4 className="font-medium text-zinc-900 dark:text-zinc-200">Organizing Member · ISI, Kolkata</h4>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-500 mt-1">Winter School on Deep Learning [WSDL]</p>
-                      <ul className="mt-2 text-sm leading-normal list-disc list-inside space-y-1">
-                        <li>Contributed to an intensive academic event aimed at providing self-motivated students with in-depth knowledge and exposure to cutting-edge research in Deep Learning.</li>
-                        <li>Organized by the Electronics and Communication Sciences Unit at the Indian Statistical Institute, Kolkata.</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="group relative grid pb-1 sm:grid-cols-8 sm:gap-8">
-                    <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono">Aug 2022 — May 2025</header>
-                    <div className="z-10 sm:col-span-6">
-                      <h4 className="font-medium text-zinc-900 dark:text-zinc-200">Member · ISI Maths Club</h4>
-                      <p className="mt-2 text-sm leading-normal text-zinc-600 dark:text-zinc-400">
-                        A small organization focusing on promoting interest and understanding in mathematics beyond the formal classroom setting, run and managed by mathematics enthusiasts at Indian Statistical Institute, Kolkata.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              {/* 4. PUBLICATIONS */}
-              <section>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Publications, Pre-Prints and Under Review Articles</h3>
-                <div className="group/list space-y-10">
-                  {PUBLICATIONS.map((pub) => (
-                    <div key={pub.id} onClick={() => setSelectedPublication(pub)} className="group relative grid sm:grid-cols-8 sm:gap-8 cursor-pointer">
-                      <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:hover:bg-zinc-100/50 dark:lg:hover:bg-zinc-800/50 lg:hover:shadow-[inset_0_1px_0_0_rgba(228,228,231,0.5)] dark:lg:hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:hover:drop-shadow-lg"></div>
-                      <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono mt-1">{pub.year}</header>
-                      <div className="z-10 sm:col-span-6">
-                        <h4 className="font-medium text-zinc-900 dark:text-zinc-200 leading-snug">{pub.title}</h4>
-                        <p className="mt-1 text-sm font-medium text-sky-600 dark:text-sky-500">{pub.status}</p>
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {pub.authors.map((a, i) => <span key={i} className="rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300">{a}</span>)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* 5. INTERESTS */}
+              {/* 2. INTERESTS */}
               <section>
                 <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Interests</h3>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
@@ -399,12 +456,67 @@ export default function Portfolio() {
                 </p>
               </section>
 
-              {/* 2. RELEVANT COURSEWORK */}
+              {/* 3. PUBLICATIONS */}
+              <section>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Publications, Pre-Prints and Under Review Articles</h3>
+                <div className="group/list space-y-10">
+                  {PUBLICATIONS.map((pub) => (
+                    <motion.div 
+                      layoutId={`pub-card-${pub.id}`}
+                      key={pub.id} 
+                      onClick={() => setSelectedPublication(pub)} 
+                      className="group relative grid sm:grid-cols-8 sm:gap-8 p-4 -mx-4 rounded-2xl cursor-pointer transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800"
+                    >
+                      <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono mt-1">{pub.year}</header>
+                      <div className="z-10 sm:col-span-6">
+                        <h4 className="font-medium text-zinc-900 dark:text-zinc-200 leading-snug">{pub.title}</h4>
+                        <p className="mt-1 text-sm font-medium text-sky-600 dark:text-sky-500">{pub.status}</p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {pub.authors.map((a, i) => <span key={i} className="rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{a}</span>)}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 4. EXPERIENCE (INTERACTIVE) */}
+              <section>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Experience</h3>
+                <div className="group/list space-y-6">
+                  {EXPERIENCE.map((exp) => (
+                    <motion.div 
+                      layoutId={`exp-card-${exp.id}`}
+                      key={exp.id} 
+                      onClick={() => setSelectedExperience(exp)}
+                      className="group relative grid pb-4 pt-4 sm:grid-cols-8 sm:gap-8 rounded-2xl p-4 -mx-4 transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 cursor-pointer"
+                    >
+                      <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono mt-1">{exp.date}</header>
+                      <div className="z-10 sm:col-span-6">
+                        <h4 className="font-medium text-zinc-900 dark:text-zinc-200">{exp.title} · {exp.location}</h4>
+                        <p className="text-sm text-zinc-600 dark:text-zinc-500 mt-1">{exp.group}</p>
+                        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
+                          {exp.summary}
+                        </p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 5. RELEVANT COURSEWORK (INTERACTIVE) */}
               <section>
                 <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Relevant Coursework</h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
-                  Causal Inference (Ongoing), Statistical Methods of Genetics, Parametric Inference, Nonparametric and Sequential Methods, Large Sample Statistical Methods (Ongoing), Design of Experiments, Linear Statistical Models, Decision Theory, Multivariate Analysis, Regression Techniques, Categorical Data Analysis, Sample Surveys, Molecular Biology (Elective), Introduction to Stochastic Processes, Applied Stochastic Processes, Introduction to Programming and Data Structures, Real Analysis (I-III), Probability Theory (I-III), Measure Theoretic Probability (Ongoing), Vector and Matrices (I-II), Numerical Analysis, Elements of Algebraic Structures, Discrete Mathematics, Differential Equation, Design and Analysis of Algorithms, Statistical Quality Control and Operations Research, Statistics Comprehensive, Metric Topology and Complex Analysis (Elective) (Ongoing), Optimization Techniques (Elective) (Ongoing), Algebra (Audit) (Ongoing).
-                </p>
+                <motion.div 
+                  layoutId="coursework-card"
+                  onClick={() => setIsCourseworkOpen(true)}
+                  className="group relative rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 p-6 cursor-pointer shadow-sm hover:shadow-md transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/50"
+                >
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed text-justify">
+                    Causal Inference (Ongoing), Optimization Techniques, Metric Topology and Complex Analysis, Measure Theoretic Probability, Nonparametric and Sequential Methods, Large Sample Statistical Methods... <br/><br/>
+                    <span className="text-sky-600 dark:text-sky-500 font-medium group-hover:text-sky-500 transition-colors">Click to expand and view the full academic list &rarr;</span>
+                  </p>
+                </motion.div>
               </section>
 
               {/* 6. SKILLS */}
