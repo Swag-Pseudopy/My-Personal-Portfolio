@@ -162,11 +162,17 @@ export default function Portfolio() {
     const isDark = resolvedTheme === 'dark';
     const nextTheme = isDark ? 'light' : 'dark';
 
-    // Fallback for older browsers that don't support View Transitions
+    // Fallback for older browsers
     if (!document.startViewTransition) {
       setTheme(nextTheme);
       return;
     }
+
+    // Trigger the native screenshot crossfade
+    document.startViewTransition(() => {
+      setTheme(nextTheme);
+    });
+  };
 
     // Tell CSS which animation to play
     document.documentElement.classList.add(isDark ? 'transition-to-light' : 'transition-to-dark');
