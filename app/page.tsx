@@ -456,31 +456,7 @@ export default function Portfolio() {
                 </p>
               </section>
 
-              {/* 3. EXPERIENCE (INTERACTIVE) */}
-              <section>
-                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Experience</h3>
-                <div className="group/list space-y-6">
-                  {EXPERIENCE.map((exp) => (
-                    <motion.div 
-                      layoutId={`exp-card-${exp.id}`}
-                      key={exp.id} 
-                      onClick={() => setSelectedExperience(exp)}
-                      className="group relative grid pb-4 pt-4 sm:grid-cols-8 sm:gap-8 rounded-2xl p-4 -mx-4 transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 cursor-pointer"
-                    >
-                      <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono mt-1">{exp.date}</header>
-                      <div className="z-10 sm:col-span-6">
-                        <h4 className="font-medium text-zinc-900 dark:text-zinc-200">{exp.title} · {exp.location}</h4>
-                        <p className="text-sm text-zinc-600 dark:text-zinc-500 mt-1">{exp.group}</p>
-                        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
-                          {exp.summary}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </section>
-
-              {/* 4. PUBLICATIONS */}
+              {/* 3. PUBLICATIONS */}
               <section>
                 <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Publications, Pre-Prints and Under Review Articles</h3>
                 <div className="group/list space-y-10">
@@ -498,6 +474,30 @@ export default function Portfolio() {
                         <div className="mt-4 flex flex-wrap gap-2">
                           {pub.authors.map((a, i) => <span key={i} className="rounded-full bg-zinc-100 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-700/50">{a}</span>)}
                         </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 4. EXPERIENCE (INTERACTIVE) */}
+              <section>
+                <h3 className="mb-8 text-sm font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">Experience</h3>
+                <div className="group/list space-y-6">
+                  {EXPERIENCE.map((exp) => (
+                    <motion.div 
+                      layoutId={`exp-card-${exp.id}`}
+                      key={exp.id} 
+                      onClick={() => setSelectedExperience(exp)}
+                      className="group relative grid pb-4 pt-4 sm:grid-cols-8 sm:gap-8 rounded-2xl p-4 -mx-4 transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900/50 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 cursor-pointer"
+                    >
+                      <header className="z-10 text-xs uppercase text-zinc-500 sm:col-span-2 font-mono mt-1">{exp.date}</header>
+                      <div className="z-10 sm:col-span-6">
+                        <h4 className="font-medium text-zinc-900 dark:text-zinc-200">{exp.title} · {exp.location}</h4>
+                        <p className="text-sm text-zinc-600 dark:text-zinc-500 mt-1">{exp.group}</p>
+                        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
+                          {exp.summary}
+                        </p>
                       </div>
                     </motion.div>
                   ))}
