@@ -395,8 +395,8 @@ export default function Portfolio() {
                 </div>
                 <ul className="mt-8 flex items-center gap-5">
                   <li><a href="https://github.com/Swag-Pseudopy" target="_blank" rel="noreferrer"><Github className="h-6 w-6" /></a></li>
-                  <li><a href="https://scholar.google.com/" target="_blank" rel="noreferrer"><GraduationCap className="h-6 w-6" /></a></li>
-                  <li><a href="https://linkedin.com/in/swagato-das" target="_blank" rel="noreferrer"><Linkedin className="h-6 w-6" /></a></li>
+                  <li><a href="https://scholar.google.com/citations?user=Fr2FQ4IAAAAJ&hl=en&oi=ao" target="_blank" rel="noreferrer"><GraduationCap className="h-6 w-6" /></a></li>
+                  <li><a href="https://linkedin.com/in/swagato-das-6a54b8380" target="_blank" rel="noreferrer"><Linkedin className="h-6 w-6" /></a></li>
                   <li><a href="mailto:swagato.isi2227@gmail.com"><Mail className="h-6 w-6" /></a></li>
                 </ul>
                 <div className="mt-8">
